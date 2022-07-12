@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Secured Page</title>
+</head>
+<body>
+<h1>Secured Page</h1>
+
+当前登录用户是：<span th:text="${principal }"></span>
+<!--
+oauth2 不能使用 来获取当前登录用户，那么应该怎么样呢？
+
+-->
+
+<br/>
+用户名： <span th:text="${principal.principal.getUsername() }"></span>
+
+
+<div>
+    <a th:href="index">首页 /</a>
+</div>
+
+<div>
+    <a th:href="logout">框架提供的注销 /logout</a>
+</div>
+
+<div>
+    <a th:href="myLogout">自定义退出系统 /myLogout</a>
+</div>
+
+
+</body>
+</html>

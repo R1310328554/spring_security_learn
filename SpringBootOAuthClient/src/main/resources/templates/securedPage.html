@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Secured Page</title>
+</head>
+<body>
+<h1>Secured Page</h1>
+
+当前登录用户是： <span th:text="${#authentication.name}"></span>
+
+<div>
+<a href="/logoutUrl">退出系统</a>
+</div>
+
+</body>
+</html>

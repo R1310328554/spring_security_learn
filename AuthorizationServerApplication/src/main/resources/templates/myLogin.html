@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>oauth server 标准登录页面</h1>
+<h3>表单登录 test </h3>
+
+
+<div>
+    <a th:href="tourist">游客页面， 无需登录即可访问</a>
+</div>
+
+
+
+<!--/login  是 绝对路径， 就是。。 这里需要 /auth/doLogin ， 才能和 loginProcessingUrl("/doLogin") 匹配..-->
+
+<form action="/auth/doLogin" method="post">
+    <table>
+        <tr>
+            <td>用户名:</td>
+            <td><input type="text" name="username"/></td>
+        </tr>
+
+        <tr>
+            <td>密码:</td>
+            <td><input type="password" name="password"/></td>
+        </tr>
+
+        <tr>
+            <td colspan="2">
+                <button type="submit">登录</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

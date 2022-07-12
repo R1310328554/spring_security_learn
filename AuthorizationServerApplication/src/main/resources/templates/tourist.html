@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+<h2>tourist页（ 游客无须登录即可以访问！ 因为手动放行了！ ）</h2>
+
+
+<div>
+    <a th:href="securedPage">受保护页面</a>
+</div>
+
+<div>
+<!--    Could not parse as expression: "/" (template: "tourist" - line 20, col 8)
+
+th:href 不能以 / 开头， why
+也不能是 ""
+-->
+    <a th:href="index">首页 /</a>
+</div>
+
+
+<div>
+    <a th:href="logout">框架提供的注销 /logout</a>
+</div>
+
+<div>
+    <a th:href="myLogout">自定义退出系统 /myLogout</a>
+</div>
+
+
+</body>
+</html>

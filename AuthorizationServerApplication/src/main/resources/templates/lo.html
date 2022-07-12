@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>login Page</title>
+</head>
+<body>
+<h1>GET login Processing Page</h1>
+<h1>直接get 访问 doLogin 的结果</h1>
+
+
+<div>
+    <a th:href="securedPage">受保护页面</a>
+</div>
+
+<div>
+    <a th:href="index">首页 /</a>
+</div>
+
+<div>
+    <a th:href="logout">框架提供的注销 /logout</a>
+</div>
+
+<div>
+    <a th:href="myLogout">自定义退出系统 /myLogout</a>
+</div>
+
+<span th:text="${#authentication}"></span>
+
+</body>
+</html>

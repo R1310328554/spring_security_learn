@@ -1,0 +1,99 @@
+server:
+  port: 8082
+  session:
+    cookie:
+      name: UISESSION
+
+
+
+baseurl: http://192.168.1.103:8082
+myOauthUrl: http://192.168.1.103:8081
+
+spring:
+  thymeleaf:
+    cache: false
+  security:
+    oauth2:
+      client:
+        registration:
+          custom-client:
+            client-id: R2dpxQ3vPrtfgF72
+            client-secret: fDw7Mpkk5czHNuSRtmhGmAGL42CaxQB9
+#            client-name: Auth Server
+            scope: user_info
+            provider: custom-provider
+            # 回调地址； 为什么这个地址是自身？谁处理这个回调请求？
+            # 必须要和 oAuth Server的回调地址匹配；因为oAuth Server会做检查！ 默认是 login/oauth2/code/
+            # 否则出现类似错误： error="invalid_grant", error_description="Invalid redirect: http://192.168.1.103:8082/doLogin2 does not match one of the registered values: [http://192.168.1.103:8082/doLogin]"
+            redirect-uri-template: http://192.168.1.103:8082/doLogin
+#            client-authentication-method: basic
+            authorization-grant-type: authorization_code
+#          testOAuth2: // Provider ID must be specified for client registration 'testOAuth2'
+          github:
+#            homeUrl: /testOAuth2
+            # 登录之后再直接访问 http://192.168.1.103:8082/login/oauth2/code/ 会出现404
+            redirect-uri-template: http://192.168.1.103:8082/login/oauth2/code/
+            client-id: 063a7d4ef110e3df94c7
+            client-secret: d453a708c6cc962ce6d721a4683fc78a67664a3a
+          weibo:
+#            homeUrl: /testOAuth2
+#            redirect-uri-template: http://192.168.1.103:8082/login/oauth2/code/
+            client-id: 3224768959
+            client-secret: d0e9aa88fa2ad09a5dbac824b22737ec
+            scope: user_info
+            provider: weibo-provider
+            # 回调地址； 为什么这个地址是自身？谁处理这个回调请求？
+#            redirect-uri-template: http%3A%2F%2F192.168.1.103%3A8082%2Flogin%2Foauth2%2Fcode%2F
+            redirect-uri-template: http://192.168.1.103:8082/login/oauth2/code/
+            #  client-authentication-method: basic
+            authorization-grant-type: authorization_code
+
+        provider:
+          custom-provider:
+            token-uri: http://192.168.1.103:8081/auth/oauth/token
+            authorization-uri: http://192.168.1.103:8081/auth/oauth/authorize
+            user-info-uri: http://192.168.1.103:8081/auth/user/me
+            user-name-attribute: name
+          weibo-provider:
+            token-uri: https://api.weibo.com/oauth2/access_token
+            authorization-uri: https://api.weibo.com/oauth2/authorize
+            user-info-uri: https://api.weibo.com/2/users/show.json
+            user-name-attribute: screen_name
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/aimeeTest2
+
+
+
+  mvc:
+    view:
+      suffix: html
+
+# jwt 配置
+custom:
+  jwt:
+    # header:凭证(校验的变量名)
+    header: Authorization
+    # 有效期1天(单位:s)
+    expire: 5184000
+    # secret: 秘钥(普通字符串) 不能太短，太短可能会导致报错
+    secret: 99c2918fe19d30bce25abfac8a3733ec
+    # 签发者
+    issuer: luo
+
+jjwt:
+  key: aXNsZWVfaGFoYQ==
+#debug: true
+
+logging:
+  level:
+    root: info
+    org.mybatis: debug
+    java.sql: debug
+
+
+
+#spring.mvc.view.prefix=classpath:/templates/
+# 给返回的页面添加后缀名，spring boot默认为.html
+#spring.mvc.view.suffix=.html

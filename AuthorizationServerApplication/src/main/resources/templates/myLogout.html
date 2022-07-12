@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>标准登录页面</h1>
+<h3>表单登录</h3>
+
+下面提供了两个方式注销，一个是原始的，一个是自定义的；
+请确认是否注销：
+
+<div class="container">
+    <form class="form-signin" method="post" action="/logout">
+        <h2 class="form-signin-heading">Are you sure you want to log out： /logout ?</h2>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Log Out</button>
+    </form>
+</div>
+
+
+<br/>
+<br/>
+<br/>
+
+<h5>
+注意
+post 请求 返回403，其实是 csrf 造成的！！ 因为 csrf 默认是开启的！
+There was an unexpected error (type=Forbidden, status=403).
+</h5>
+
+<div class="container">
+    <form class="form-signin" method="post" action="/myLogout">
+        <h2 class="form-signin-heading">Are you sure you want to log out： /myLogout ?</h2>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Log Out</button>
+    </form>
+</div>
+
+</body>
+</html>

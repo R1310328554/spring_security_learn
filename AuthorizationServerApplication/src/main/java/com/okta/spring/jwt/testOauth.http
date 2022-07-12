@@ -1,0 +1,43 @@
+GET http://localhost:8080/resources
+Accept: */*
+Cache-Control: no-cache
+
+###
+
+
+POST http://192.168.1.103:8081/auth/oauth/authorize?response_type=code&client_id=R2dpxQ3vPrtfgF72&scope=user_info&state=SjBEGfCx5GD7uJ76dhflHLvsbHlUQ028Q7BeOvkz-D4%3D&redirect_uri=http://192.168.1.103:8082/login/oauth2/code/
+Cookie: JSESSIONID=C0CCC02E9EE9D78C43D2900CCED546DD; Path=/auth; HttpOnly
+
+
+###
+http://192.168.1.103:8083/authPage/login?response_type=code&client_id=R2dpxQ3vPrtfgF72&scope=user_info&state=SjBEGfCx5GD7uJ76dhflHLvsbHlUQ028Q7BeOvkz-D4=&redirect_uri=http://192.168.1.103:8082/login/oauth2/code/&isRedirect=true
+
+###
+POST http://192.168.1.103:8081/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+username=a&password=1
+
+###
+
+POST http://192.168.1.103:8081/auth/oauth/authorize?response_type=code&client_id=R2dpxQ3vPrtfgF72&scope=user_info&state=SjBEGfCx5GD7uJ76dhflHLvsbHlUQ028Q7BeOvkz-D4=&redirect_uri=http://192.168.1.103:8082/login/oauth2/code/&isRedirect=true
+
+
+###
+#?client_id=7dd33c1a56813db7f797&redirect_uri=http://localhost:8999/v1/user/login&client_secret=de51eecf4d0b887ee9ddbe13019d664d09a6150f&code=69df6eb702a1422ff596
+POST http://192.168.1.103:8081/auth/oauth/token?client_id=R2dpxQ3vPrtfgF72&client_secret=fDw7Mpkk5czHNuSRtmhGmAGL42CaxQB9&grant_type=authorization_code&redirect_uri=http://192.168.1.103:8082/login/oauth2/code/&code=sBvd5I&state=SjBEGfCx5GD7uJ76dhflHLvsbHlUQ028Q7BeOvkz-D4%3D
+
+
+### &scope=user_info
+
+GET http://192.168.1.103:8081/auth/user/me
+Accept: application/json
+Authorization: Bearer 2c94c323-e038-427f-9263-415b8909abcc
+User-Agent: Java/1.8.0_231
+Host: 192.168.1.103:8081
+Connection: keep-alive
+Cookie: JSESSIONID=52E2B06BCD0376DF899F046E1C82CDFA; JSESSIONID=6DFC6E266D7BAAF6302D358DC9E748CF
+
+###
+
+

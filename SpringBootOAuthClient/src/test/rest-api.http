@@ -1,0 +1,258 @@
+GET http://localhost:8080/resources
+Accept: */*
+Cache-Control: no-cache
+
+### 我的 testOAuth2
+GET https://github.com/login/oauth/authorize?client_id=ee0e0710193b7cac1e68&redirect_uri=http://192.168.1.103:8999/v1/github/user/login&state=123456
+###
+POST https://github.com/login/oauth/access_token?client_id=ee0e0710193b7cac1e68&redirect_uri=http://192.168.1.103:8999/v1/github/user/login&client_secret=d544353486c9e083d9c7437187236e8f191c6632&code=69df6eb702a1422ff596
+
+
+### 别人的
+GET https://github.com/login/oauth/authorize?client_id=7dd33c1a56813db7f797&redirect_uri=http://localhost:8999/v1/user/login&state=123456
+
+###
+https://github.com/login/oauth/authorize?client_id=R2dpxQ3vPrtfgF72&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Flogin%2Foauth2%2Fcode%2Fgithub&response_type=code&scope=read%3Auser&state=V673lZDmlUFJPCeFiCkY79ydk51KGaQl4dliqKyyOSw%3D
+
+### github
+POST https://github.com/login/oauth/access_token?client_id=7dd33c1a56813db7f797&redirect_uri=http://localhost:8999/v1/user/login&client_secret=de51eecf4d0b887ee9ddbe13019d664d09a6150f&code=69df6eb702a1422ff596
+
+
+
+
+# 不行！
+#用微博帐号登录出错了！
+#    对第三方应用进行授权时出现错误，请您联系第三方应用的开发者： Robert_90452或者稍后再试。
+#错误码：21322
+#重定向地址不匹配
+#https://api.weibo.com/oauth2/authorize?client_id=973886123&response_type=code&redirect_uri=http://192.168.1.103:8080/callback
+
+###
+error=bad_verification_code&error_description=The+code+passed+is+incorrect+or+expired.&error_uri=https%3A%2F%2Fdocs.github.com%2Fapps%2Fmanaging-oauth-apps%2Ftroubleshooting-oauth-app-access-token-request-errors%2F%23bad-verification-code
+
+### 微博 YOUR_CLIENT_ID 和 App Key 是不是同一个东西？
+# 可能需要一点时间才能生效。 —— 10分钟？
+# 1. 引导需要授权的用户到如下地址：
+https://api.weibo.com/oauth2/authorize?client_id=973886123&response_type=code&redirect_uri=http%3A%2F%2F192.168.1.103%3A8999%2Fv1%2Fweibo%2Fuser%2Flogin
+
+### 2. 如果用户同意授权，页面跳转至 YOUR_REGISTERED_REDIRECT_URI/?code=CODE
+
+### 3. 换取Access Token, 其中client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET可以使用basic方式加入header中，返回值
+#POST https://api.weibo.com/oauth2/access_token?client_id=973886123&client_secret=3253f16e8324a73f6ede08c7405c0bad&grant_type=authorization_code&redirect_uri=http%3A%2F%2F192.168.1.103%3A8080%2Fcallback&code=6e4e246b598e20929d58d596b7b44683
+
+POST https://api.weibo.com/oauth2/access_token?client_id=973886123&client_secret=3253f16e8324a73f6ede08c7405c0bad&grant_type=authorization_code&redirect_uri=http%3A%2F%2F192.168.1.103%3A8999%2Fv1%2Fweibo%2Fuser%2Flogin&code=c440c1e5e1de58f51bfc53a97bb245d9
+
+###
+content-type: 'application/json',
+Accept2: 'application/json'
+
+{
+"client_id": "973886123"
+"client_secret":"3253f16e8324a73f6ede08c7405c0bad"
+}
+
+{
+    "access_token": "SlAV32hkKG",
+    "remind_in": 3600,
+    "expires_in": 3600
+}
+
+{
+  "access_token": "2.00mBipRDhQ1uDB7d9998710f065lPc",
+  "remind_in": "128051",
+  "expires_in": 128051,
+  "uid": "3011920182",
+  "isRealName": "true"
+}
+
+### 使用 refresh_token 刷新
+https://api.weibo.com/oauth2/access_token?client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET&grant_type=refresh_token&redirect_uri=YOUR_REGISTERED_REDIRECT_URI&refresh_token=
+
+###
+
+
+### 其他接口测试
+#请求方式：get
+#请求URL：https://api.weibo.com/2/statuses/mentions.json
+#请求参数：access_token=2.00uMvXSBhQ1uDBf7392567e4BtqjME
+#GET https://api.weibo.com/2/statuses/mentions.json?access_token=2.00uMvXSBhQ1uDBf7392567e4BtqjME
+#GET https://api.weibo.com/2/account/get_uid.json?access_token=2.00uMvXSBhQ1uDBf7392567e4BtqjME
+GET https://api.weibo.com/2/users/show.json?uid=1190191612&access_token=2.00uMvXSBhQ1uDBf7392567e4BtqjME
+
+###
+GET https://api.weibo.com/2/users/show.json?uid=1190191612
+Accept: application/json
+Cache-Control: no-cache
+Authorization: Bearer 2.00uMvXSBhQ1uDBf7392567e4BtqjME
+
+### 为什么这个 access_token 获取到的 statuses 为空？ 为什么没有数据？
+GET https://api.weibo.com/2/statuses/mentions.json?access_token=2.00mBipRDhQ1uDB7d9998710f065lPc
+
+
+
+### 别人的微博测试
+https://api.weibo.com/oauth2/authorize?client_id=2121452623&response_type=code&redirect_uri=http://auth.mymall.com/oauth2.0/weibo/success
+
+
+
+{
+  "id": 1190191612,
+  "idstr": "1190191612",
+  "class": 1,
+  "screen_name": "Robert_90452",
+  "name": "Robert_90452",
+  "province": "11",
+  "city": "1",
+  "location": "北京 东城区",
+  "description": "",
+  "url": "",
+  "profile_image_url": "https://tva1.sinaimg.cn/crop.0.0.720.720.50/46f0e1fcjw8ewv8d48lj5j20k00k040q.jpg?KID=imgbed,tva&Expires=1656768533&ssig=QNRGPgkV%2Bd",
+  "light_ring": false,
+  "cover_image_phone": "http://ww1.sinaimg.cn/crop.0.0.640.640.640/549d0121tw1egm1kjly3jj20hs0hsq4f.jpg",
+  "profile_url": "u/1190191612",
+  "domain": "",
+  "weihao": "",
+  "gender": "f",
+  "followers_count": 50,
+  "followers_count_str": "50",
+  "friends_count": 240,
+  "pagefriends_count": 26,
+  "statuses_count": 1258,
+  "video_status_count": 0,
+  "video_play_count": 0,
+  "favourites_count": 2,
+  "created_at": "Sun Jul 07 21:55:28 +0800 2013",
+  "following": false,
+  "allow_all_act_msg": false,
+  "geo_enabled": true,
+  "verified": false,
+  "verified_type": -1,
+  "remark": "",
+  "insecurity": {
+    "sexual_content": false
+  },
+  "status": {
+    "visible": {
+      "type": 0,
+      "list_id": 0
+    },
+    "created_at": "Tue Feb 25 13:06:01 +0800 2020",
+    "id": 4475841197524802,
+    "idstr": "4475841197524802",
+    "mid": "4475841197524802",
+    "can_edit": false,
+    "show_additional_indication": 0,
+    "text": "转发微博",
+    "source_allowclick": 0,
+    "source_type": 1,
+    "source": "<a href=\"http://app.weibo.com/t/feed/c66T5g\" rel=\"nofollow\">Android客户端</a>",
+    "favorited": false,
+    "truncated": false,
+    "in_reply_to_status_id": "",
+    "in_reply_to_user_id": "",
+    "in_reply_to_screen_name": "",
+    "pic_urls": [],
+    "geo": null,
+    "is_paid": false,
+    "mblog_vip_type": 0,
+    "annotations": [
+      {
+        "client_mblogid": "58916374-5948-4eca-86c2-7fb4098b94f4"
+      },
+      {
+        "mapi_request": true
+      }
+    ],
+    "reposts_count": 0,
+    "comments_count": 0,
+    "reprint_cmt_count": 0,
+    "attitudes_count": 0,
+    "pending_approval_count": 0,
+    "isLongText": false,
+    "reward_exhibition_type": 0,
+    "hide_flag": 0,
+    "mlevel": 0,
+    "biz_feature": 0,
+    "hasActionTypeCard": 0,
+    "darwin_tags": [],
+    "hot_weibo_tags": [],
+    "text_tag_tips": [],
+    "mblogtype": 0,
+    "rid": "0",
+    "userType": 0,
+    "more_info_type": 0,
+    "positive_recom_flag": 0,
+    "content_auth": 0,
+    "gif_ids": "",
+    "is_show_bulletin": 2,
+    "comment_manage_info": {
+      "comment_permission_type": -1,
+      "approval_comment_type": 0,
+      "comment_sort_type": 0
+    },
+    "repost_type": 1,
+    "pic_num": 0,
+    "reprint_type": 0,
+    "can_reprint": false,
+    "new_comment_style": 0
+  },
+  "ptype": 0,
+  "allow_all_comment": true,
+  "avatar_large": "https://tva1.sinaimg.cn/crop.0.0.720.720.180/46f0e1fcjw8ewv8d48lj5j20k00k040q.jpg?KID=imgbed,tva&Expires=1656768533&ssig=6fQwRTSfCn",
+  "avatar_hd": "https://tva1.sinaimg.cn/crop.0.0.720.720.1024/46f0e1fcjw8ewv8d48lj5j20k00k040q.jpg?KID=imgbed,tva&Expires=1656768533&ssig=qDlLLEdvxW",
+  "verified_reason": "",
+  "verified_trade": "",
+  "verified_reason_url": "",
+  "verified_source": "",
+  "verified_source_url": "",
+  "follow_me": false,
+  "like": false,
+  "like_me": false,
+  "online_status": 0,
+  "bi_followers_count": 4,
+  "lang": "zh-cn",
+  "star": 0,
+  "mbtype": 0,
+  "mbrank": 0,
+  "svip": 0,
+  "mb_expire_time": 0,
+  "block_word": 0,
+  "block_app": 0,
+  "chaohua_ability": 0,
+  "brand_ability": 0,
+  "nft_ability": 0,
+  "vplus_ability": 0,
+  "wenda_ability": 0,
+  "live_ability": 0,
+  "gongyi_ability": 0,
+  "paycolumn_ability": 0,
+  "credit_score": 80,
+  "user_ability": 2097152,
+  "urank": 9,
+  "story_read_state": -1,
+  "vclub_member": 0,
+  "is_teenager": 0,
+  "is_guardian": 0,
+  "is_teenager_list": 0,
+  "pc_new": 7,
+  "special_follow": false,
+  "planet_video": 0,
+  "video_mark": 0,
+  "live_status": 0,
+  "user_ability_extend": 0,
+  "status_total_counter": {
+    "total_cnt": 40,
+    "repost_cnt": 12,
+    "comment_cnt": 7,
+    "like_cnt": 21,
+    "comment_like_cnt": 0
+  },
+  "video_total_counter": {
+    "play_cnt": -1
+  },
+  "brand_account": 0,
+  "hongbaofei": 0,
+  "green_mode": 0
+}
+
+###

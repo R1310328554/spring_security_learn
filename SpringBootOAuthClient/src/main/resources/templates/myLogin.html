@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>oauth2 客户端登录页面</h1>
+<h3>应该通过 get 访问远程 oauth server，等待回调，然后登录</h3>
+
+<a href="http://192.168.1.103:8082/oauth2/authorization/custom-client" > custom-client登录 </a>
+<br/>
+<a href="http://192.168.1.103:8082/oauth2/authorization/weibo" > weibo登录 </a>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+<h3> 不能使用下面的 表单登录！ </h3>
+
+<!--/login  是 绝对路径， 就是。。 这里需要 /auth/doLogin ， 才能和 loginProcessingUrl("/doLogin") 匹配..-->
+// oauth2Login虽然也有loginPage， 但是这样的话，就退化成为了 formLogin，失去了oauth2Login 的对oauth2 server交互等功能！
+// xxx 上面说的完全错误；oauth2Login的loginPage 不是表单登录，
+// 不需要真正的post 请求到loginProcessingUrl！  —— 这样反而导致OAuth2LoginAuthenticationFilter.attemptAuthentication 的OAuth2ErrorCodes.INVALID_REQUEST
+
+<form action="/doLogin" method="post">
+    <table>
+        <tr>
+            <td>用户名:</td>
+            <td><input type="text" name="username"/></td>
+        </tr>
+
+        <tr>
+            <td>密码:</td>
+            <td><input type="password" name="password"/></td>
+        </tr>
+
+        <tr>
+            <td colspan="2">
+                <button type="submit">登录</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
