@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * @author luokai 2022年7月9日
+ */
 @Component("successAuthentication")
 public class OoSuccessAuthentication extends SavedRequestAwareAuthenticationSuccessHandler {
 

@@ -7,13 +7,16 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.security.Principal;
 
+/**
+ * @author luokai 2022年7月9日
+ */
 @RestController
 public class UserController {
 
     // 必须有这个 端点，否则OAuth2客户端： OAuth2AuthenticationException: [invalid_user_info_response] An error occurred while attempting to retrieve the UserInfo Resource: 404 null]
     @GetMapping("/user/me") // 需要返回 application/json， 而不是 text/html
     public Principal user(Principal principal) {
-        System.out.println("oauth2的user info 端点， 必须返回json " + principal);
+        System.out.println("oauth2的user info 端点， 必须返回json格式 principal： " + principal);
         return principal;
     }
 

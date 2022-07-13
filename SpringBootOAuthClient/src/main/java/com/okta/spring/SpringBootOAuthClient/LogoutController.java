@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * @author luokai 2022年7月9日
+ */
 @Controller
 @RequestMapping("/")
 public class LogoutController {

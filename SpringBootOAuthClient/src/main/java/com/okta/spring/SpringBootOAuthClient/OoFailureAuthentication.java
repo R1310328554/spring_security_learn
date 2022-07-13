@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * @author luokai 2022年7月9日
+ */
 @Component("failureAuthentication")
 public class OoFailureAuthentication extends SimpleUrlAuthenticationFailureHandler {
 
@@ -33,7 +36,7 @@ public class OoFailureAuthentication extends SimpleUrlAuthenticationFailureHandl
         result.put("code",500);
         result.put("msg","fail");
         result.put("ex",exception.getMessage());
-        result.put("msg2","登录失败");// 为什么出现问号乱码？
+        result.put("msg2","登录失败");// 为什么出现问号乱码？todo
         ObjectMapper mapper = new ObjectMapper();
 
         // [invalid_user_info_response] An error occurred while attempting to retrieve the UserInfo Resource: 401 null]

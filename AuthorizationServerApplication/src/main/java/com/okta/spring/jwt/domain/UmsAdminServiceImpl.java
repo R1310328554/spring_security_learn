@@ -80,6 +80,8 @@ public class UmsAdminServiceImpl implements UmsAdminService {
                 throw new BadCredentialsException("密码不正确");
             }
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+            // 为什么需要设置到SecurityContext 里面呢？ 因为 其他地方(比如登出)可能用得着..
             SecurityContextHolder.getContext().setAuthentication(authentication);
             token = jwtTokenUtil.createToken(userDetails.getUsername(), userDetails.getPassword());
         } catch (AuthenticationException e) {

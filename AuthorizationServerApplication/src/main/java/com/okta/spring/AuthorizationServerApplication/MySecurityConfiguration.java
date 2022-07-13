@@ -15,6 +15,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * @author luokai 2022年7月9日
+ */
 @Configuration
 @Order(1)
 public class MySecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -90,14 +93,14 @@ public class MySecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .requestMatchers()
                 .antMatchers("/myLogin","/doLogin", "/oauth/authorize"
                         , "/protected/**", "/mustLogin/**", "/securedPage*"
-                        , "/myLogout*" , "/logout?logout*" // login?logout 也需要保护起来，否则401 —— 这样也不行 todo
+                        , "/myLogout*" , "/login?logout*" // login?logout 也需要保护起来，否则401——这样也不行， authorizeRequests里面 permit也不行，todo
                         // 首页也最好保护起来，否则..
                         , "/", "/index", "/tourist*", "/a*")// 这里antMatchers必须要包括/doLogin， 否则永远都是登录页面
                 .and()
                 .authorizeRequests()
 
                 //antMatchers这里 "/user/me"不能放行，如果放行，则不能获取到Principal参数 —— 错错错，再次测试发现 这里 "/user/me"是否放行 都不要紧； 不知道哪里搞错了
-                .antMatchers("/tourist","/myLogin", "/logout?logout*", "/doLogin","/user/me123", "/oauth/authorize")
+                .antMatchers("/tourist","/myLogin", "/login?logout*","/logout?logout*", "/doLogin","/user/me", "/oauth/authorize")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -128,14 +131,20 @@ public class MySecurityConfiguration extends WebSecurityConfigurerAdapter {
         .and()
 
         // 这里的sessionManagement 并不能影响到AuthorizationServer， 因为..
-//        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
         ;
 
     }
 
+
+    /*
+        accessDeniedHandler 和 failureHandler 什么区别？
+     */
     protected void configure2(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint)
+                .exceptionHandling()
+                //
+                .authenticationEntryPoint(unauthorizedEntryPoint)
                 .and()
                 .authorizeRequests()
                 .antMatchers("/login").permitAll()

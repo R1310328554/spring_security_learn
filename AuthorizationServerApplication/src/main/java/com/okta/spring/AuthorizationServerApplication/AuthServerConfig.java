@@ -1,4 +1,5 @@
 package com.okta.spring.AuthorizationServerApplication;
+import com.okta.spring.AuthorizationServerApplication.cfg.JwtTokenEnhancer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,13 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+
+/**
+ * @author luokai 2022年7月9日
+ */
 @Configuration
 @EnableAuthorizationServer
 public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
@@ -78,11 +86,46 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
                 ;
     }
 
+    @Autowired
+    JwtTokenEnhancer enhancer;
+    /**
+     * JWT 令牌转换器  具体配置在: {@link com.qycq.oauth.security.config.JwtTokenStoreConfig}
+     */
+    @Autowired
+    private JwtAccessTokenConverter jwtAccessTokenConverter;
 
-    @Override
+    // TokenStore就是Persistence interface for OAuth2 tokens.用来持久化OAuth2的tokens，也就是accessToken、refreshToken，包括存储、读取、查找
+    @Autowired
+    TokenStore tokenStore;
+
+    //TokenGranter 通过grantType、tokenRequest 生成AccessToken
+    // OAuth2AccessToken grant(String grantType, TokenRequest tokenRequest);
+
+    /*
+
+        TokenEnhancer 提供一个OAuth2AccessToken，返回一个加强后的OAuth2AccessToken
+        如何在access_token中自定义一些参数返回创建扩展器 TokenEnhancer,改扩展器可以让我们的请求信息中加入一些自定义信息,例如我现在在我的请求返回格式中加入一个userInfo的对象
+        https://blog.csdn.net/weixin_54889617/article/details/121860500
+
+        AccessTokenConverter 将map、OAuth2AccessToken相互转换
+         因为要支持jwt、 json格式 ， 所以
+         主要是下面的需要转换， 其他的如clientId、scope 一般直接赋值不需改变。
+        AUD, resourceIds， 意为Audience，听众；受众；读者
+        JTI, 来源于额外信息： token.getAdditionalInformation().get(JTI)
+
+        为什么需要转换呢？什么场景需要accessTokenConverter？
+     */
+//    @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 //        endpoints.addInterceptor()
-//        endpoints.
+        // endpoints 应该配置哪些呢？ 如何配置？ 分别什么作用？
+        // tokenGranter 默认是？ 不需要定制化吧
+        endpoints
+                .accessTokenConverter(jwtAccessTokenConverter)
+//                .tokenStore(tokenStore)
+//            .tokenEnhancer(enhancer)
+//            .tokenGranter(null)
+        ;
         super.configure(endpoints);
     }
 

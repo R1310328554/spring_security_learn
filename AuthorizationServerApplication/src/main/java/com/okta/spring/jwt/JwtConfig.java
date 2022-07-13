@@ -15,9 +15,11 @@ import java.util.stream.Collectors;
 
 
 /*
-    TokenStore 有4个实现： jdbc/redis/jtw/inMemory
- */
+    TokenStore 有4个实现： jdbc/redis/jwt/inMemory
 
+    jwt即JwtTokenStore，其实是不会在服务端存储token的，这样的做法适合分布式部署；
+
+ */
 @Configuration
 public class JwtConfig {
 
@@ -31,8 +33,8 @@ public class JwtConfig {
      */
     @Bean // 如果添加了JwtTokenStore， 那么之前的请求方式就不行了，为什么？
 //    因为.. jwt的getAccessToken 一直返回null； 因为JwtTokenStore不会存储任何东西；需要请求者把token传过来
+    // 401 {"error":"invalid_token","error_description":"Cannot convert access token to JSON"}
     public TokenStore tokenStore(JwtAccessTokenConverter jwtAccessTokenConverter) {
-
         //A TokenStore implementation that just reads data from the tokens themselves. Not really a store since it never persists anything, and methods like getAccessToken(OAuth2Authentication) always return null. But nevertheless a useful tool since it translates access tokens to and from authentications. Use this wherever a TokenStore is needed, but remember to use the same JwtAccessTokenConverter instance (or one with the same verifier) as was used when the tokens were minted.
         return new JwtTokenStore(jwtAccessTokenConverter);
     }

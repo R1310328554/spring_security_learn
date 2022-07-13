@@ -17,6 +17,9 @@ import org.springframework.security.oauth2.provider.token.store.redis.RedisToken
 
 import javax.sql.DataSource;
 
+/**
+ * @author luokai 2022年7月9日
+ */
 //@Configuration
 public class RedisConfig {
 

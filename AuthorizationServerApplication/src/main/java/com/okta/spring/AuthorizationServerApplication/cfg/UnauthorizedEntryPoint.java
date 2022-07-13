@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
 
+/**
+ * @author luokai 2022年7月9日
+ */
 @Component("unauthorizedEntryPoint")
 public class UnauthorizedEntryPoint implements AuthenticationEntryPoint {
 
