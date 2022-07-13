@@ -1,0 +1,8 @@
+GET http://192.168.1.103:8081/auth/user/me
+Accept: application/json
+Authorization: Bearer 2c94c323-e038-427f-9263-415b8909abcc
+User-Agent: Java/1.8.0_231
+Host: 192.168.1.103:8081
+Connection: keep-alive
+
+
