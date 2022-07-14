@@ -173,6 +173,8 @@ OAuth2LoginAuthenticationFilter 是oauth2 服务端才有的，相当于是 oaut
 tokenEndpoint..去获取clientSecret，然后 code/state/ clientId/clientSecret 
 
 
+# OAuth2LoginAuthenticationFilter
+这个其实是 OAuth2 服务端 发起一个http 请求到OAuth2 client.. —— 是不是搞反了？   
 
 
 OAuth2ClientAuthenticationProcessingFilter 就是OAuth2 client 发起一个http 请求到OAuth2 服务端, 获取AccessToken！ ————  An OAuth2 client filter that can be used to acquire an OAuth2 access token from an authorization server, and load an authentication object into the SecurityContext 
