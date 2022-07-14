@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+<h1>Spring Security SSO 首页（首页需登录 才能可以访问！ 因为没有手动放行！ ）</h1>
+
+<div>
+    <a th:href="securedPage">受保护页面</a>
+</div>
+
+<div>
+    <a th:href="aa">aa </a>
+</div>
+
+<div>
+    <a th:href="logout">框架提供的注销 /logout</a>
+</div>
+
+<div>
+    <a th:href="myLogout">自定义退出系统 /myLogout</a>
+</div>
+
+
+
+</body>
+</html>
