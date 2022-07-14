@@ -5,8 +5,11 @@ import com.okta.spring.AuthorizationServerApplication.cfg.SuccessAuthentication;
 import com.okta.spring.AuthorizationServerApplication.cfg.UnauthorizedEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -32,8 +35,10 @@ public class MySecurityConfiguration extends WebSecurityConfigurerAdapter {
     private FailureAuthentication failureAuthentication;
     @Autowired
     private UnauthorizedEntryPoint unauthorizedEntryPoint;
-    @Autowired
-    private UserDetailsService userDetailsService;
+
+//  	- Bean method 'inMemoryUserDetailsManager' in 'UserDetailsServiceAutoConfiguration' not loaded because @ConditionalOnMissingBean(types: org.springframework.security.authentication.AuthenticationManager,org.springframework.security.authentication.AuthenticationProvider,org.springframework.security.core.userdetails.UserDetailsService; SearchStrategy: all) found beans of type 'org.springframework.security.authentication.AuthenticationManager' authenticationManagerBean
+//    @Autowired
+//    private UserDetailsService userDetailsService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -91,6 +96,8 @@ public class MySecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 // 配置受formLogin 保护的资源端点， 不配置且不放行则 401； 当然，oauth2的端点不需要配置在这里，否则画蛇添足导致oauth2登录不正常！
                 .requestMatchers()
+
+                // 这里必须要有 /oauth/authorize，表示 oauth2 client需要先登录，然后才可以有权力去授权
                 .antMatchers("/myLogin","/doLogin", "/oauth/authorize"
                         , "/protected/**", "/mustLogin/**", "/securedPage*"
                         , "/myLogout*" , "/login?logout*" // login?logout 也需要保护起来，否则401——这样也不行， authorizeRequests里面 permit也不行，todo
@@ -162,8 +169,15 @@ public class MySecurityConfiguration extends WebSecurityConfigurerAdapter {
         .and()
         .withUser("b")
                 .password(passwordEncoder.encode("2"))
-                .roles("USER")
+                .roles("ADMIN")
         ;
+    }
+
+
+    @Bean // https://blog.csdn.net/weijianpeng2013_2015/article/details/97269048
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
 }

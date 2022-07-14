@@ -1,8 +1,55 @@
 GET http://192.168.1.103:8081/auth/user/me
 Accept: application/json
-Authorization: Bearer 2c94c323-e038-427f-9263-415b8909abcc
+Authorization: Bearer f98b1b90-2110-416c-9418-d06b277160a8
 User-Agent: Java/1.8.0_231
 Host: 192.168.1.103:8081
 Connection: keep-alive
 
 
+### 直接访问认证服务器是ok的
+GET http://192.168.1.103:8081/auth/oauth/check_token?token=4a26fe3c-39c7-464b-88f2-ecc67a9c1954
+
+
+
+
+{
+  "user_name": "b",
+  "scope": [
+    "user_info"
+  ],
+  "active": true,
+  "userInfoAddition": "{\"accountNonExpired\":true,\"accountNonLocked\":true,\"authorities\":[{\"authority\":\"ROLE_ADMIN\"}],\"credentialsNonExpired\":true,\"enabled\":true,\"username\":\"b\"}",
+  "exp": 1657825816,
+  "authorities": [
+    "ROLE_ADMIN"
+  ],
+  "client_id": "R2dpxQ3vPrtfgF72"
+}
+
+
+### 出现 403
+GET http://192.168.1.103:8083/res/aa
+Accept: application/json
+Authorization: Bearer 4a26fe3c-39c7-464b-88f2-ecc67a9c1954
+
+### 404，why —— 手动加上token_key端点，即创建TokenKeyEndpoint bean 就好了; 不过还是 AccessDeniedException("You need to authenticate to see a shared key")
+GET http://192.168.1.103:8081/auth/oauth/token_key
+Accept: application/json
+Authorization: Bearer 4a26fe3c-39c7-464b-88f2-ecc67a9c1954
+
+响应：
+{
+  "timestamp": "2022-07-14T07:22:23.133+0000",
+  "status": 404,
+  "error": "Not Found",
+  "message": "No message available",
+  "path": "/auth/oauth/token_key"
+}
+why
+
+
+AccessDeniedException("You need to authenticate to see a shared key")
+
+
+
+###

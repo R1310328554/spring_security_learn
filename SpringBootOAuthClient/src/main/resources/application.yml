@@ -5,7 +5,7 @@ server:
       name: UISESSION
 
 
-
+# baseurl 不能使用 el表达式， 解析会多出一个 $ 符号..
 baseurl: http://192.168.1.103:8082
 myOauthUrl: http://192.168.1.103:8081
 
@@ -18,7 +18,7 @@ spring:
         registration:
           custom-client:
             client-id: R2dpxQ3vPrtfgF72
-            client-secret: fDw7Mpkk5czHNuSRtmhGmAGL42CaxQB9
+            client-secret: 123456
 #            client-name: Auth Server
             scope: user_info
             provider: custom-provider

@@ -1,0 +1,114 @@
+GET http://localhost:8080/resources
+Accept: */*
+Cache-Control: no-cache
+
+
+### 1 获取有效的会话JSESSIONID
+POST http://192.168.1.103:8081/auth/doLogin
+Content-Type: application/x-www-form-urlencoded
+
+username=a&password=1
+
+
+### 2 获取有效的code, 返回的code 只能被使用一次！ 而注意 state 是参数，不是返回值， 是可以随便填写的，会被原样返回
+POST http://192.168.1.103:8081/auth/oauth/authorize?response_type=code&client_id=R2dpxQ3vPrtfgF72&scope=user_info&state=sss&redirect_uri=http://192.168.1.103:8082/doLogin
+Cookie: JSESSIONID=08A5B2525992B012FEF0CFB276F4EF95; Path=/auth; HttpOnly
+
+
+### 3 通过code获取token
+#?client_id=7dd33c1a56813db7f797&redirect_uri=http://localhost:8999/v1/user/login&client_secret=de51eecf4d0b887ee9ddbe13019d664d09a6150f&code=69df6eb702a1422ff596
+POST http://192.168.1.103:8081/auth/oauth/token?client_id=R2dpxQ3vPrtfgF72&client_secret=123456&grant_type=authorization_code&redirect_uri=http://192.168.1.103:8082/doLogin&code=iI8H7R&state=sss
+Cookie: JSESSIONID=80AED60A43704360D84A74DA560887B7; Path=/auth; HttpOnly
+
+为什么返回 401：
+{
+  "timestamp": "2022-07-14T09:33:56.709+0000",
+  "status": 401,
+  "error": "Unauthorized",
+  "message": "Unauthorized",
+  "path": "/auth/oauth/token"
+}
+
+
+### 下面是抓包的结果； 只能通过 Authorization 进行校验？ Basic的值是怎么来的？ 是
+POST http://192.168.1.103:8081/auth/oauth/token
+Accept: application/json;charset=UTF-8
+Content-Type: application/x-www-form-urlencoded;charset=UTF-8
+#Cookie: JSESSIONID=80AED60A43704360D84A74DA560887B7; Path=/auth; HttpOnly
+Authorization: Basic UjJkcHhRM3ZQcnRmZ0Y3MjoxMjM0NTY=
+
+grant_type=authorization_code&code=5wWg8M&redirect_uri=http%3A%2F%2F192.168.1.103%3A8082%2FdoLogin
+
+### password 模式 todo， 这里行不通，貌似不支持 grant_type=password，Unsupported grant type: password
+# 原因： 密码模式，必须配置AuthenticationManager，不然不生效； 默认是4种认证模式； 参见： AuthorizationServerEndpointsConfigurer.getDefaultTokenGranters
+# 自定义的AuthServerConfig#configure 配置的authorizedGrantTypes并没有用！ why？ todo
+POST http://192.168.1.103:8081/auth/oauth/token?client_id=R2dpxQ3vPrtfgF72&client_secret=123456&username=a&password=1
+Accept: application/json;charset=UTF-8
+Content-Type: application/x-www-form-urlencoded;charset=UTF-8
+#Cookie: JSESSIONID=80AED60A43704360D84A74DA560887B7; Path=/auth; HttpOnly
+Authorization: Basic UjJkcHhRM3ZQcnRmZ0Y3MjoxMjM0NTY=
+
+grant_type=password&code=NN1x1O&redirect_uri=http%3A%2F%2F192.168.1.103%3A8082%2FdoLogin
+
+
+
+### 获取用户信息  &scope=user_info # 可以有两个同名JSESSIONID的Cookie
+GET http://192.168.1.103:8081/auth/user/me
+Accept: application/json
+Authorization: Bearer f98b1b90-2110-416c-9418-d06b277160a8
+User-Agent: Java/1.8.0_231
+Host: 192.168.1.103:8081
+Connection: keep-alive
+Cookie: JSESSIONID=52E2B06BCD0376DF899F046E1C82CDFA; JSESSIONID=6DFC6E266D7BAAF6302D358DC9E748CF
+
+
+
+### 直接访问认证服务器是ok的
+GET http://192.168.1.103:8081/auth/oauth/token?grant_type=password&client_id=client_2&client_secret=secret_2&username=admin&password=123&scope=all
+
+### 密码授权方式的流程是：
+#
+#客户端使用用户的账号和密码到授权服务器换取访问令牌
+#客户端使用访问令牌到资源服务器获取用户资源
+#获取令牌： 使用postman访问以下地址到授权服务器获取访问令牌和刷新令牌：
+POST http://192.168.1.103:8081/auth/oauth/token?client_id=R2dpxQ3vPrtfgF72&client_secret=123456&grant_type=password&redirect_uri=http://192.168.1.103:8082/doLogin&code=B52tTB&state=SjBEGfCx5GD7uJ76dhflHLvsbHlUQ028Q7BeOvkz-D4%3D
+
+###
+POST http://192.168.1.103:8081/auth/oauth/token?client_id=R2dpxQ3vPrtfgF72&client_secret=123456&grant_type=password&redirect_uri=http://192.168.1.103:8082/doLogin&code=ee&state=SjBEGfCx5GD7uJ76dhflHLvsbHlUQ028Q7BeOvkz-D4%3D
+
+
+###
+
+
+### 简化授权方式
+#简化授权方式是相对于授权码授权方式而言的，因为比授权码授权方式少了授权码这一环节，所以叫做简化授权方式。
+#
+#3.3.1 配置说明
+#简化授权方式需要在授权服务器中配置以下的客户端信息：
+#
+#client_id：客户端ID（必选项）
+#client_secret：客户端密码（必选项）
+#grant_type：授权类型，且必须为固定值implicit（必选项）
+#redirect_uri：授权后返回的地址（必选项）
+#scope：令牌的作用范围（可选项）
+#————————————————
+#版权声明：本文为CSDN博主「JavaBigData1024」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+#原文链接：https://blog.csdn.net/weixin_44516305/article/details/88886839
+POST http://192.168.1.103:8081/auth/oauth/token?client_id=R2dpxQ3vPrtfgF72&client_secret=123456&username=a&password=1
+Accept: application/json;charset=UTF-8
+Content-Type: application/x-www-form-urlencoded;charset=UTF-8
+#Cookie: JSESSIONID=80AED60A43704360D84A74DA560887B7; Path=/auth; HttpOnly
+Authorization: Basic UjJkcHhRM3ZQcnRmZ0Y3MjoxMjM0NTY=
+
+grant_type=implicit&code=NN1x1O&redirect_uri=http%3A%2F%2F192.168.1.103%3A8082%2FdoLogin
+
+//implicit模式不需要访问/auth/oauth/token， 否则： Implicit grant type not supported from token endpoint
+
+### implicit模式 的 response_type参数的值必须为固定值token。
+http://192.168.1.103:8081/auth/oauth/authorize?response_type=token&client_id=R2dpxQ3vPrtfgF72&redirect_uri=http://192.168.1.103:8082/doLogin&scope=user_info
+Accept: application/json;charset=UTF-8
+Cookie: JSESSIONID=DDE8E4C7DBFF57EC3F39EFDC80CBBBFC; Path=/auth; HttpOnly
+Content-Type: application/x-www-form-urlencoded;charset=UTF-8
+#Cookie: JSESSIONID=80AED60A43704360D84A74DA560887B7; Path=/auth; HttpOnly
+#Authorization: Basic UjJkcHhRM3ZQcnRmZ0Y3MjoxMjM0NTY=
+###

@@ -22,7 +22,7 @@ public class OoSuccessAuthentication extends SavedRequestAwareAuthenticationSucc
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
-        System.out.println("到这里已经登录成功， 不过故意返回 json， 后面可以正常访问受保护页面！！");
+        System.out.println("到这里已经登录成功， 本应该返回页面，不过此处故意返回json数据， 后面可以正常访问受保护页面不受影响！！");
         System.out.println("onAuthenticationSuccess request = [" + request + "], response = [" + response + "], authentication = [" + authentication + "]");
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         PrintWriter writer = response.getWriter();

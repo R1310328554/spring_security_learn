@@ -39,10 +39,23 @@ public class JwtTokenEnhancer implements TokenEnhancer {
         /**
          * 此处直接强转即可。因为我们知道当前的这个登录用户就是我们自定义的用户对象
          */
-        //JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
+//        JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
+//        User jwtUser = (User) authentication.getPrincipal(); // 返回的Principal就是oauth2 的对象 org.springframework.security.core.userdetails.User.User(java.lang.String, java.lang.String, boolean, boolean, boolean, boolean, java.util.Collection<? extends org.springframework.security.core.GrantedAuthority>)
         Object jwtUser =  authentication.getPrincipal();
         Map<String, Object> map = new LinkedHashMap<>();
-//        map.put("userInfo", JSON.toJSON(jwtUser));
+
+        /*
+        onAuthenticationFailure request = [org.springframework.security.web.header.HeaderWriterFilter$HeaderWriterRequest@4353f592], response = [org.springframework.security.web.header.HeaderWriterFilter$HeaderWriterResponse@c9974da], exception = [org.springframework.security.oauth2.core.OAuth2AuthenticationException: [invalid_token_response] An error occurred while attempting to retrieve the OAuth 2.0 Access Token Response: Error while extracting response for type [class org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse] and content type [application/json;charset=UTF-8]; nested exception is org.springframework.http.converter.HttpMessageNotReadableException: An error occurred reading the OAuth 2.0 Access Token Response: JSON parse error: Cannot deserialize instance of `java.lang.String` out of START_OBJECT token; nested exception is com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot deserialize instance of `java.lang.String` out of START_OBJECT token
+         at [Source: (PushbackInputStream); line: 1, column: 128] (through reference chain: java.util.LinkedHashMap["userInfo"]); nested exception is org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Cannot deserialize instance of `java.lang.String` out of START_OBJECT token; nested exception is com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot deserialize instance of `java.lang.String` out of START_OBJECT token
+         at [Source: (PushbackInputStream); line: 1, column: 128] (through reference chain: java.util.LinkedHashMap["userInfo"])]
+         */
+        Object value = JSON.toJSONString(jwtUser);
+
+        // 导致回调client 发生了200，但返回： {"msg":"fail","msg2":"????","code":500,"ex":"[invalid_user_info_response] An error occurred while attempting to retrieve the UserInfo Resource: 401 null"}
+        // 其实是因为配置了JdbcTokenStore 导致的！
+
+//        map.put("userInfo123", "aaaaaaaaa");//
+        map.put("userInfoAddition", value);//  不能直接put object，否则 oauth2 client 无法解析；——错错错，跟这个无关！
         /**
          * 这样我们的accessToken就可以进行扩展信息了。然后将其配置到授权服务器中。{@link com.qycq.oauth.security.AuthorizationServerConfig}
          */

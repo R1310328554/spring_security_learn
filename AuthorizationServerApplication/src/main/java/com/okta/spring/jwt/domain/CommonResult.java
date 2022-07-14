@@ -89,6 +89,14 @@ public class CommonResult<T> {
         return new CommonResult<T>(ResultCode.FORBIDDEN.getCode(), ResultCode.FORBIDDEN.getMessage(), data);
     }
 
+    public static CommonResult<?> data(Object parseObject) {
+        return null;//todo
+    }
+
+    public static CommonResult<?> fail(String s) {
+        return null;//todo
+    }
+
     public long getCode() {
         return code;
     }

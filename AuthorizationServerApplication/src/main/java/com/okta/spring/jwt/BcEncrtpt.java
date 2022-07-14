@@ -14,6 +14,10 @@ public class BcEncrtpt {
         boolean result = bCryptPasswordEncoder.matches("song", song);
         // 打印比较结果
         System.out.println("比较结果：\t" + result);
+
+        String finalPassword = "{bcrypt}"+bCryptPasswordEncoder.encode("123456");
+        System.out.println("finalPassword = " + finalPassword);
+
     }
 
 

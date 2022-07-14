@@ -44,7 +44,7 @@ public class LoginController {
     @GetMapping("/myLogin")
     // 实验证明 无法通过此种方式获取 oauth2 的配置信息
     public String myLogin(Map<String, String> oauth2AuthenticationUrlToClientName, HttpServletRequest request) throws IOException {
-        System.out.println("LoginController.myLogin " + clientRegistrationRepository);
+        System.out.println("LoginController.访问登录页： " + clientRegistrationRepository);
         return "myLogin";
     }
 

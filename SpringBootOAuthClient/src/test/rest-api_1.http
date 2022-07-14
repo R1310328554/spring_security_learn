@@ -2,11 +2,9 @@ GET http://localhost:8080/resources
 Accept: */*
 Cache-Control: no-cache
 
-###
-
-
+### 必须要有正确的 名为JSESSIONID的Cookie，否则需要登录后才能继续。
 POST http://192.168.1.103:8081/auth/oauth/authorize?response_type=code&client_id=R2dpxQ3vPrtfgF72&scope=user_info&state=SjBEGfCx5GD7uJ76dhflHLvsbHlUQ028Q7BeOvkz-D4%3D&redirect_uri=http://192.168.1.103:8082/login/oauth2/code/
-Cookie: JSESSIONID=C0CCC02E9EE9D78C43D2900CCED546DD; Path=/auth; HttpOnly
+Cookie: JSESSIONID=5ADE859445EDEC5FECF7754493C597B4; Path=/auth; HttpOnly
 
 
 ###
@@ -21,7 +19,15 @@ username=a&password=1
 ###
 
 POST http://192.168.1.103:8081/auth/oauth/authorize?response_type=code&client_id=R2dpxQ3vPrtfgF72&scope=user_info&state=SjBEGfCx5GD7uJ76dhflHLvsbHlUQ028Q7BeOvkz-D4=&redirect_uri=http://192.168.1.103:8082/login/oauth2/code/&isRedirect=true
+# 如果oauth/authorize 不被保护， 则 o server后台错误： org.springframework.security.authentication.InsufficientAuthenticationException: User must be authenticated with Spring Security before authorization can be completed.
+# 否则o server后台没有错误； 302 到登录页
 
+# 访问 http://192.168.1.103:8081/auth/oauth/authorize?response_type=code&client_id=R2dpxQ3vPrtfgF72&scope=user_info&st 会什么会被302到登录页？ 而我其实已经方向了它
+# 访问 http://192.168.1.103:8081/auth/oauth/authorize?response_type=code 却是返回401 error="invalid_client", error_description="Bad client credentials"
+# 这个是因为，client_id参数不能少，而且必须能查到。 查不到则o server后台错误（其实是INFO级别）： AuthorizationEndpoint        : Handling ClientRegistrationException error: No client with requested id: 123
+###
+GET http://192.168.1.103:8081/auth/oauth/authorize?response_type=code&client_id=R2dpxQ3vPrtfgF72
+# o server后台没有错误； 302 到登录页
 
 ###
 #?client_id=7dd33c1a56813db7f797&redirect_uri=http://localhost:8999/v1/user/login&client_secret=de51eecf4d0b887ee9ddbe13019d664d09a6150f&code=69df6eb702a1422ff596
