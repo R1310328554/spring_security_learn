@@ -106,9 +106,10 @@ public class MySecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .requestMatchers()
 
                 // 这里必须要有 /oauth/authorize，表示 oauth2 client需要先登录，然后才可以有权力去授权
+                // 这里 /user/me 不能包含
                 .antMatchers("/myLogin", "/doLogin", "/oauth/authorize"
                         , "/protected/**", "/mustLogin/**", "/securedPage*"
-                        , "/user/*"
+                        , "/user/refresh*"
                         , "/myLogout*", "/login?logout*" // login?logout 也需要保护起来，否则401——这样也不行， authorizeRequests里面 permit也不行，todo
                         // 首页也最好保护起来，否则..
                         , "/", "/index", "/tourist*", "/a*")// 这里antMatchers必须要包括/doLogin， 否则永远都是登录页面

@@ -207,6 +207,10 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
             .scopes("user_info")
             .autoApprove(true) // 否则会返回 页面 而不是json， 需要确认 是否授权。。
             .redirectUris(RedirectURLs)
+            .accessTokenValiditySeconds(36)
+            .refreshTokenValiditySeconds(360)
+//            .resourceIds()
+//            .additionalInformation()
         .and()
         .inMemory()
         .withClient("ee0e0710193b7cac1e68")

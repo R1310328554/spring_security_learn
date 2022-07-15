@@ -12,7 +12,7 @@ username=a&password=1
 
 ### 2 获取有效的code, 返回的code 只能被使用一次！ 而注意 state 是参数，不是返回值， 是可以随便填写的，会被原样返回； scope 参数可以不填，但是如果填写了，就必须正确！
 POST http://192.168.1.103:8081/auth/oauth/authorize?response_type=code&client_id=R2dpxQ3vPrtfgF72&scope=user_info&state=sss&redirect_uri=http://192.168.1.103:8082/doLogin
-Cookie: JSESSIONID=974E16E1604D677DDFBE754B04CD0A44; Path=/auth; HttpOnly
+Cookie: JSESSIONID=06170BB3BA9F558552E4EADB54706A78; Path=/auth; HttpOnly
 
 
 ### 3 通过code获取token
@@ -40,22 +40,26 @@ Cookie: JSESSIONID=974E16E1604D677DDFBE754B04CD0A44; Path=/auth; HttpOnly
 
 ### 下面是抓包的结果； 只能通过 Authorization 进行校验？ Basic的值是怎么来的？ 是； scope参数可以没有，但如果有，必须正确。
 # 其中 UjJkcHhRM3ZQcnRmZ0Y3MjoxMjM0NTY= 是client_id:client_secret 即R2dpxQ3vPrtfgF72:123456 base64 的结果；
-# 其实也可以把client_id/client_secret 作为参数传递！—— 试验行不通..
+# 其实也可以把client_id/client_secret 作为参数传递！—— 试验行不通.. 请求体可以没有client_id，但如果有，则需要正确！
 POST http://192.168.1.103:8081/auth/oauth/token
 Accept: application/json;charset=UTF-8
 Content-Type: application/x-www-form-urlencoded;charset=UTF-8
 #Cookie: JSESSIONID=974E16E1604D677DDFBE754B04CD0A44; Path=/auth; HttpOnly
 Authorization: Basic UjJkcHhRM3ZQcnRmZ0Y3MjoxMjM0NTY=
 
-client_id=R2dpxQ3vPrtfgF72&client_secret=12345&grant_type=authorization_code&scope=user_info&code=N2M7RK&redirect_uri=http%3A%2F%2F192.168.1.103%3A8082%2FdoLogin
+grant_type=authorization_code&scope=user_info&code=o67kRZ&redirect_uri=http%3A%2F%2F192.168.1.103%3A8082%2FdoLogin
 
-### 另外一种形式
-#grant_type=authorization_code&scope=user_info&code=SbGhKO&redirect_uri=http%3A%2F%2F192.168.1.103%3A8082%2FdoLogin
+### 对于同一个客户，在过期之前， 其返回的access_token、refresh_token 等都是一样的，但是 expires_in 通常会减少； 当expires_in减少为0，也就过期了，
+# 过期了后在通过/oauth/token 获取token，那么就会返回新的！
+#
+
+
 
 ### 4 获取用户信息; 这里无需scope参数； &scope=user_info # 可以有两个同名JSESSIONID的Cookie
+# 测试发现， 对于 password 认证模式获取的token， 无法获取 userinfo..
 GET http://192.168.1.103:8081/auth/user/me
 Accept: application/json
-Authorization: Bearer bfa38b35-1ad7-4146-bea6-194ae6da12bf
+Authorization: Bearer 58305c9b-db75-4163-a06b-cd76f8fb93e7
 User-Agent: Java/1.8.0_231
 Host: 192.168.1.103:8081
 Connection: keep-alive
