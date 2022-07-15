@@ -14,7 +14,7 @@ import org.springframework.security.oauth2.provider.token.ResourceServerTokenSer
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
 @Configuration
-//@EnableResourceServer
+@EnableResourceServer
 public class ResouceServerConfig extends ResourceServerConfigurerAdapter {
 
 
@@ -31,10 +31,10 @@ public class ResouceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) {
-        resources.resourceId(RESOURCE_ID)//资源 id
-                .tokenStore(tokenStore)
-//                .tokenServices(tokenService())//验证令牌的服务
-                .stateless(true);
+        resources.resourceId(RESOURCE_ID)//资源 id， 默认是 oauth2-resource
+                .tokenStore(tokenStore) // 默认是本地， 即 inMemory
+                .tokenServices(tokenService())//验证令牌的服务
+                .stateless(true);// 默认就是 stateless = true
     }
 
     /*
@@ -54,8 +54,8 @@ public class ResouceServerConfig extends ResourceServerConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/**")
-//                .access("isAuthenticated()")
-//                 .access("#oauth2.clientHasRole('ROLE_ADMIN')")
+                 //   .access("isAuthenticated()")
+                 //   .access("#oauth2.clientHasRole('ROLE_ADMIN')")
                  .access("hasRole('ROLE_ADMIN')")
                 .and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

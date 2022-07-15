@@ -39,17 +39,18 @@ public class TokenHandleUtil {
 	private static final String ACCESS = "access:";
 	private static final String AUTH_TO_ACCESS = "auth_to_access:";
 	private static final String AUTH = "auth:";
+	public static final Integer THREE_MIN = 1000*60*3;
 
 	/**
 	 * token剩余过期时间
 	 */
-	@Value("${oauth.token.expires.remain}")
+	@Value("${oauth.token.expires.remain:180000}") // 3分钟
 	private int expriesRemain;
 
 	/**
 	 * token总过期时间
 	 */
-	@Value("${oauth.token.expires.total}")
+	@Value("${oauth.token.expires.total:1800000}") // 30分钟
 	private int expriesTotal;
 
 	@Autowired

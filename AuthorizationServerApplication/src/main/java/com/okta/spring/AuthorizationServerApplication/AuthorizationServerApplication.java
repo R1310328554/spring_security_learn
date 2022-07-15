@@ -9,7 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
 @SpringBootApplication
-@EnableResourceServer // 不能少，
+@EnableResourceServer // 不能少，EnableResourceServer配置了一个资源服务器
 // 否则客户端：DefaultOAuth2UserService.loadUser 在 Map<String, Object> userAttributes = response.getBody();获取的 userAttributes 为空！
 // attributes cannot be empty
 

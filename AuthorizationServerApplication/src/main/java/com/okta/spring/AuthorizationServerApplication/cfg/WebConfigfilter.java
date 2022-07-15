@@ -1,4 +1,4 @@
-package com.okta.spring.AuthorizationServerApplication;
+package com.okta.spring.AuthorizationServerApplication.cfg;
 
 import com.okta.spring.AuthorizationServerApplication.cfg.refresh.OauthTokenInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;

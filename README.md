@@ -1,6 +1,6 @@
 spring_security、 oauth2 学习demo
 
-# 已经完成
+# 已经完成功能
 - 支持weibo、github、自定义oauth2服务端等多种方式
 - 支持各种自定义登录、登出页
 - 支持token存jdbc、redis
@@ -14,22 +14,28 @@ spring_security、 oauth2 学习demo
 - 4中认证方式的测试通过
 - 各种问题解释说明
 
-# 如何跑起来？
+# 如何运行？
 配置好github、weibo client（不配置的话，使用我的也可以）然后直接启动AuthorizationServerApplication、SpringBootOAuthClientApplication 即可
 
+默认情况下，  
+访问 http://192.168.1.103:8082/  是oauth2 客户端  
+访问 http://192.168.1.103:8081/auth/  是oauth2 客户端
 
+### 如果需要测试 Spring security 可以单独启动 MyResourceServerApplication
+
+### 如果需要支持资源服务器分离部署, 需要额外的启动 JwtAuthorizationServerApplication
 
 ## 效果图
-首页
-![首页](doc/首页_20220715162434.png "首页")
+客户端首页  
+![客户端首页](doc/首页_20220715162434.png "客户端首页")
 
-客户端登录页
+客户端登录页  
 ![客户端登录页](doc/登录页_20220715162507.png "客户端登录页")
 
-服务端登录页
+服务端登录页  
 ![服务端登录页](doc/服务端登录页_20220715162507.png "服务端登录页")
 
-客户端访问保护页
+客户端访问保护页  
 ![客户端访问保护页](doc/保护页_20220715162656.png "客户端访问保护页")
 
 
@@ -37,4 +43,5 @@ spring_security、 oauth2 学习demo
 - 真正的前后端分离
 - 支持微信、抖音、Facebook、Twitter登录
 - OpenID、OIDC、Keycloak的支持
-- 代码不够清晰， 无用代码、注释比较多
+- 代码不够清晰，无用代码、注释比较多
+- RBAC 

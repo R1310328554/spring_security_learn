@@ -39,13 +39,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-//   private final PasswordEncoder passwordEncoder;
-//    public AuthServerConfig(PasswordEncoder passwordEncoder) {
-//        this.passwordEncoder = passwordEncoder;
-//    }
-
     /*
-
         参考 AuthorizationServerSecurityConfiguration#configure 方法
         		http
         	.authorizeRequests()
@@ -57,54 +51,43 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
             	.antMatchers(tokenEndpointPath, tokenKeyPath, checkTokenPath)
         .and()
         	.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER);
-
      */
     @Override
     public void configure(
         AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
         // 到底什么意思？ tokenKeyAccess的意思是  .antMatchers(tokenKeyPath).access(configurer.getTokenKeyAccess())
 
-//        oauthServer.setBuilder(  );
-
         // 为什么我都写了 @EnableAuthorizationServer 还需要配置这个？ 这个算是定制化？ 是必须的？ 不是， 默认两个都是 denyAll(); 这个对于 资源服务器分开的时候就不行；
         // 不过这里确实可以不用 客制化； 其实这里，随便怎么写都行，因为实际用不到tokenKey、checkToken 两个http端点
         oauthServer
             .tokenKeyAccess("permitAll()")
             .checkTokenAccess("permitAll()") // 这里不能使用 isAuthenticated(), 否则远程访问checkToken端点返回 401
-//        .and().logout().logoutUrl()
 
+        /* test
+        oauthServer.setBuilder(  );
+
+        .and().logout().logoutUrl()
             // IllegalStateException: securityBuilder cannot be null, 这里为什么不能使用sessionManagement？
-//            .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-
-//        .accessDeniedHandler(ac)
-//        .realm()
-
-
-//            .allowFormAuthenticationForClients()
-//            .checkTokenAccess("isAuthenticated()")
-//            .tokenKeyAccess("isAuthenticated()")
-
-//        .authenticationEntryPoint()
-//        .addTokenEndpointAuthenticationFilter()
-//        .and()
-
-                //
-//            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
-                ;
+            .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+        .accessDeniedHandler(ac)
+        .realm()
+            .allowFormAuthenticationForClients()
+            .checkTokenAccess("isAuthenticated()")
+            .tokenKeyAccess("isAuthenticated()")
+            .authenticationEntryPoint()
+            .addTokenEndpointAuthenticationFilter()
+        .and()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        */
+        ;
     }
 
     @Autowired
-    JwtTokenEnhancer enhancer;
-//    /**
-//     * JWT 令牌转换器  具体配置在: {@link com.qycq.oauth.security.config.JwtTokenStoreConfig}
-//     */
-//    @Autowired
-//    private JwtAccessTokenConverter jwtAccessTokenConverter;
-//
-//    // TokenStore就是Persistence interface for OAuth2 tokens.用来持久化OAuth2的tokens，也就是accessToken、refreshToken，包括存储、读取、查找
+    JwtTokenEnhancer enhancer; // 使用JwtTokenEnhancer 不一定要配套 JwtTokenStore
+
+    // TokenStore就是Persistence interface for OAuth2 tokens.用来持久化OAuth2的tokens，也就是accessToken、refreshToken，包括存储、读取、查找
     @Autowired
-    TokenStore tokenStore;
+    TokenStore tokenStore;// 如果使用 jdbc.redis，需要注入一个TokenStore， 默认是InMemory！
 
     //TokenGranter 通过grantType、tokenRequest 生成AccessToken
     // OAuth2AccessToken grant(String grantType, TokenRequest tokenRequest);
@@ -123,34 +106,29 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
         为什么需要转换呢？什么场景需要accessTokenConverter？
      */
-//    @Override
+    @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-//        endpoints.addInterceptor()
-        // endpoints 应该配置哪些呢？ 如何配置？ 分别什么作用？
-        // tokenGranter 默认是？ 不需要定制化吧
-
-//        endpoints.implicitGrantService
-
         endpoints
                 .tokenStore(tokenStore)
-                .tokenEnhancer(enhancer)
+                .tokenEnhancer(enhancer) // 这个完全是可选的，按照实际情况设置
 
                 .authenticationManager(authenticationManager) // 密码模式，必须配置AuthenticationManager，不然不生效
 
                 //设置userDetailsService刷新token时候会用到 https://blog.csdn.net/qq_38941259/article/details/105762497
                 //否则： TokenEndpoint  : Handling error: IllegalStateException, UserDetailsService is required.
                 .userDetailsService(userDetailsService);
-        //  .tokenServices()
 
-//            .tokenGranter(null)
         ;
-//        System.out.println("authenticationManager = " + authenticationManager);
+        // System.out.println("authenticationManager = " + authenticationManager);
         super.configure(endpoints);
     }
 
     @Autowired
     UserDetailsService userDetailsService;
 
+    /*
+        为访问 /oauth/token_key 端点，需要手动配置这么一个TokenKeyEndpoint
+     */
     @Bean
     public TokenKeyEndpoint tokenKeyEndpoint() {
         return new TokenKeyEndpoint(new JwtAccessTokenConverter());
@@ -163,35 +141,44 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     private AuthenticationManager authenticationManager;
 
 
+    /**
+     * 如果需要支持jwt， 把下面的JwtAccessTokenConverter 和下面的方法放开！
+     *
+     * JWT 令牌转换器  具体配置在: {@link com.qycq.oauth.security.config.JwtTokenStoreConfig}
+     */
+
+    /*
+    @Autowired
+    private JwtAccessTokenConverter jwtAccessTokenConverter;
     public void configureJwt(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-//        endpoints.addInterceptor()
+        //        endpoints.implicitGrantService
+        //        endpoints.addInterceptor()
         // endpoints 应该配置哪些呢？ 如何配置？ 分别什么作用？
-        // tokenGranter 默认是？ 不需要定制化吧
-//        endpoints
-//                .accessTokenConverter(jwtAccessTokenConverter)
-//                .tokenStore(tokenStore)
-//            .tokenEnhancer(enhancer)
-//            .tokenGranter(null)
+        // tokenGranter 默认是？ 一般不需要定制化吧
+
+        endpoints
+                .accessTokenConverter(jwtAccessTokenConverter)
+
+        //            // .tokenStore(tokenStore)
+        //            .tokenServices()
+        //        // .tokenGranter(null)
         ;
 
-        /*
-         * pathMapping用来配置端点URL链接，有两个参数，都将以 "/" 字符为开始的字符串
-         *
-         * defaultPath：这个端点URL的默认链接
-         *
-         * customPath：你要进行替代的URL链接
-         */
-        endpoints.pathMapping("/oauth/token", "/oauth/xwj");
+        // pathMapping用来配置端点URL链接，有两个参数，都将以 "/" 字符为开始的字符串
+        // defaultPath：这个端点URL的默认链接
+        // customPath：你要进行替代的URL链接
+        // endpoints.pathMapping("/oauth/token", "/oauth/xwj");
 
         super.configure(endpoints);
     }
+    */
 
+    /*  如果需要支持 jdbc存储， 把这里的注释放开!
     @Autowired
     ClientDetailsService jdbcClientDetailsService;
-
     public void configureJdbc(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.withClientDetails(jdbcClientDetailsService);
-    }
+    }*/
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -207,10 +194,20 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
             .scopes("user_info")
             .autoApprove(true) // 否则会返回 页面 而不是json， 需要确认 是否授权。。
             .redirectUris(RedirectURLs)
+
+            // 为了快速测试， 这里的过期时间故意设置比较短
             .accessTokenValiditySeconds(36)
             .refreshTokenValiditySeconds(360)
-//            .resourceIds()
-//            .additionalInformation()
+
+            // Spring Security OAuth2 架构上分为Authorization Server认证服务器和Resource Server资源服务器。
+            // 我们可以为每一个Resource Server（一个微服务实例）设置一个resourceid。Authorization Server给client第三方客户端授权的时候，可以设置这个client可以访问哪一些Resource Server资源服务，
+            // 如果没设置，就是对所有的Resource Server都有访问权限。
+            // resourceIds
+            // .resourceIds()
+
+            // 额外信息
+            .additionalInformation("xxx=1","yyy=2")
+
         .and()
         .inMemory()
         .withClient("ee0e0710193b7cac1e68")

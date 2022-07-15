@@ -6,7 +6,7 @@
  * 版权所有，侵权必究！
  */
 
-package com.okta.spring.AuthorizationServerApplication.cfg.config;
+package com.okta.spring.AuthorizationServerApplication.cfg.db;
 
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 

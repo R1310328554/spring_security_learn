@@ -38,7 +38,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 public class ResourceServerConfig {
 
 
-
 }
 
 
@@ -46,7 +45,7 @@ public class ResourceServerConfig {
 //@EnableOAuth2Client
 //@EnableConfigurationProperties
 //@Configuration
-  class OAuth2ClientConfig {
+class OAuth2ClientConfig {
 
     @Bean
     @ConfigurationProperties(prefix = "security.oauth2.client")
@@ -64,4 +63,5 @@ public class ResourceServerConfig {
     public OAuth2RestTemplate clientCredentialsRestTemplate() {
         return new OAuth2RestTemplate(clientCredentialsResourceDetails());
     }
+
 }

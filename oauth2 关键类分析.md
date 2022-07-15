@@ -1,8 +1,23 @@
+# 端点说明
+Spring Security对OAuth2提供了默认可访问端点，即URL
+​ ​/oauth/authorize​ ​​:申请授权码code，涉及类​ ​AuthorizationEndpoint​ ​
+​ ​/oauth/token​ ​​:获取令牌token，涉及类​ ​TokenEndpoint​ ​
+​ ​/oauth/check_token​ ​​:用于资源服务器请求端点来检查令牌是否有效，涉及类​ ​CheckTokenEndpoint​ ​
+​ ​/oauth/confirm_access​ ​​:用于确认授权提交，涉及类​ ​WhitelabelApprovalEndpoint​ ​
+​ ​/oauth/error​ ​​:授权错误信息，涉及​ ​WhitelabelErrorEndpoint​ ​
+​ ​/oauth/token_key​ ​​:提供公有密匙的端点，使用JWT令牌时会使用，涉及类​ ​TokenKeyEndpoint​ ​
+
 
 # 资源服务器
 首先需要搞懂，什么是ResourceServer 资源服务器？  资源服务器需要做什么？ 提供哪些功能？ 
 我理解是配置有哪些资源，如何访问，权限如何，资源的访问策略； 
 当然，ResourceServer资源服务器需要使用到 认证服务器，因为一般需要事先认证后，才能访问被保护的资源！
+
+参考 https://zhuanlan.zhihu.com/p/164688581  
+Spring Security OAuth2 架构上分为Authorization Server认证服务器和Resource Server资源服务器。
+我们可以为每一个Resource Server（一个微服务实例）设置一个resourceid。Authorization Server给client第三方客户端授权的时候，可以设置这个client可以访问哪一些Resource Server资源服务，如果没设置，就是对所有的Resource Server都有访问权限。
+
+默认是ResourceServerSecurityConfigurer.resourceId，oauth2-resource 
 
 ## @EnableResourceServer 
 @EnableResourceServer 引入了ResourceServerConfiguration，它关键就是提供了configure方法；这个configure 是做了一些默认的配置； 这里的configure 是谁调用的？
@@ -136,6 +151,7 @@ build 调用doBuild，然后会把所有的  然后会把所有的各种 ，conf
     AbstractConfiguredSecurityBuilder#doBuild
 
 # 授权服务器
+
 
 ## @EnableAuthorizationServer
     @EnableAuthorizationServer 
