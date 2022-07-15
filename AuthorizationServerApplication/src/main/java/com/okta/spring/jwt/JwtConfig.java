@@ -112,4 +112,20 @@ public class JwtConfig {
         return jwtAccessTokenConverter;
     }
 
+
+    /**
+     * 创建JWT令牌转换器
+     *
+     * SigningKey 的作用是？
+     */
+    // @Bean
+    public JwtAccessTokenConverter jwtAccessTokenConverter3(){
+        /**
+         * 设置JWT令牌的签名key
+         */
+        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+        converter.setSigningKey("signingKey");
+        return converter;
+    } // https://blog.csdn.net/weixin_44516305/article/details/88887229
+
 }

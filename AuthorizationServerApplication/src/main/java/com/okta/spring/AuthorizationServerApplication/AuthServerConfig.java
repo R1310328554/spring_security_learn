@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -25,6 +27,7 @@ import org.springframework.security.oauth2.provider.token.store.redis.RedisToken
  */
 @Configuration
 @EnableAuthorizationServer
+@Order(-2)
 public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     @Value("${user.oauth.clientId}")
     private String ClientID;
@@ -131,15 +134,22 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
         endpoints
                 .tokenStore(tokenStore)
                 .tokenEnhancer(enhancer)
+
+                .authenticationManager(authenticationManager) // 密码模式，必须配置AuthenticationManager，不然不生效
+
+                //设置userDetailsService刷新token时候会用到 https://blog.csdn.net/qq_38941259/article/details/105762497
+                //否则： TokenEndpoint  : Handling error: IllegalStateException, UserDetailsService is required.
+                .userDetailsService(userDetailsService);
         //  .tokenServices()
 
-            .authenticationManager(authenticationManager) // 密码模式，必须配置AuthenticationManager，不然不生效
 //            .tokenGranter(null)
         ;
 //        System.out.println("authenticationManager = " + authenticationManager);
         super.configure(endpoints);
     }
 
+    @Autowired
+    UserDetailsService userDetailsService;
 
     @Bean
     public TokenKeyEndpoint tokenKeyEndpoint() {

@@ -16,6 +16,7 @@ import org.apache.http.Header;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.cloud.client.ServiceInstance;
 //import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -30,6 +31,9 @@ import java.util.Map;
 @Slf4j
 @ApiModel(value = "自定义刷新令牌逻辑")
 public class AuthRefreshTokenServiceImpl implements AuthRefreshTokenService {
+
+    @Value("${user.oauth.selfLanUrl:}")
+    private String selfLanUrl;
 
     /**
      * 授予类型
@@ -92,7 +96,10 @@ public class AuthRefreshTokenServiceImpl implements AuthRefreshTokenService {
          */
 
         //拼接请求刷新令牌的地址: URI
-        String uri = "";
+        String uri = selfLanUrl;
+        if (uri.endsWith("/")) {
+            uri = uri.substring(0, uri.length() - 1);
+        }
         String refreshTokenUrl = uri + REFREASH_URL;
         log.info("refreshTokenUrl==========>{}", refreshTokenUrl);
 
@@ -108,7 +115,7 @@ public class AuthRefreshTokenServiceImpl implements AuthRefreshTokenService {
         map.put(REFRESH_TOKEN, refreshToken);
 
 
-        //        构建配置请求参数(网址、请求参数、编码、client)
+        //  构建配置请求参数(网址、请求参数、编码、client)
 
         Header[] headers = HttpHeader
                 .custom()
@@ -138,11 +145,11 @@ public class AuthRefreshTokenServiceImpl implements AuthRefreshTokenService {
         String error = parseObject.getString(ERROR_NAME);
         log.error("ERROR=====>{}", error);
         if (StringUtils.isNotBlank(error)) {
-            return CommonResult.fail("无请求头信息!");
+            return CommonResult.failed("无请求头信息!" + error);
         }
 
         // 将数据返回
-        return CommonResult.data(parseObject);
+        return CommonResult.success(parseObject);
     }
 }
 

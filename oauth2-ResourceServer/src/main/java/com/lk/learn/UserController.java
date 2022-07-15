@@ -1,5 +1,6 @@
 
 package com.lk.learn;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,6 +10,10 @@ import java.security.Principal;
 
 /**
  * @author luokai 2022年7月9日
+ *
+ * 访问这里的请求需要携带类似下面的请求头：
+ * Authorization: Bearer 068225f6-3f91-4a19-9a11-1244e2587ce3
+ *
  */
 @RestController
 public class UserController {
@@ -29,12 +34,14 @@ public class UserController {
 
 
     @RequestMapping("/a")
+    @PreAuthorize("principal.equals('a')") // 额外的权限控制， 只有用户a才能访问
     public String a2( ) throws IOException {
         System.out.println("测试页面.a  xx权限");
         return "种瓜得瓜：a";
     }
 
     @RequestMapping("/bb")
+    @PreAuthorize("principal.equals('b')")// 额外的权限控制， 只有用户b才能访问
     public String bb( ) throws IOException {
         System.out.println("测试页面.bb  xx权限");
         return "种豆得豆：bb";

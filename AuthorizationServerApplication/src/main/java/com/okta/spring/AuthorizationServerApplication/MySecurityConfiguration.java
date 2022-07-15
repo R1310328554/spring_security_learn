@@ -11,12 +11,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configurers.provisioning.InMemoryUserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
+import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * @author luokai 2022年7月9日
@@ -98,16 +106,17 @@ public class MySecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .requestMatchers()
 
                 // 这里必须要有 /oauth/authorize，表示 oauth2 client需要先登录，然后才可以有权力去授权
-                .antMatchers("/myLogin","/doLogin", "/oauth/authorize"
+                .antMatchers("/myLogin", "/doLogin", "/oauth/authorize"
                         , "/protected/**", "/mustLogin/**", "/securedPage*"
-                        , "/myLogout*" , "/login?logout*" // login?logout 也需要保护起来，否则401——这样也不行， authorizeRequests里面 permit也不行，todo
+                        , "/user/*"
+                        , "/myLogout*", "/login?logout*" // login?logout 也需要保护起来，否则401——这样也不行， authorizeRequests里面 permit也不行，todo
                         // 首页也最好保护起来，否则..
                         , "/", "/index", "/tourist*", "/a*")// 这里antMatchers必须要包括/doLogin， 否则永远都是登录页面
                 .and()
                 .authorizeRequests()
 
                 //antMatchers这里 "/user/me"不能放行，如果放行，则不能获取到Principal参数 —— 错错错，再次测试发现 这里 "/user/me"是否放行 都不要紧； 不知道哪里搞错了
-                .antMatchers("/tourist","/myLogin", "/login?logout*","/logout?logout*", "/doLogin","/user/me", "/oauth/authorize")
+                .antMatchers("/tourist", "/myLogin", "/login?logout*", "/logout?logout*", "/doLogin", "/user/me", "/user/*", "/oauth/authorize")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -121,24 +130,24 @@ public class MySecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                .authorizeRequests()
 //                .anyRequest().authenticated() // 不能加这行，
 //                否则：一直401 <oauth><error_description>Full authentication is required to access this resource</error_description><error>unauthorized</error></oauth>
-        .and()
-        .logout()
+                .and()
+                .logout()
 
-        // 设置logoutUrl之后，再访问/logout会出现401（如果不放行）， 或者404
-        // 测试发现， /myLogout、 /logout 两个端点都可以注销成功，why？ 按理说只有一个;  测试发现如果antMatchers 发现/logout，则只有logoutUrl可以注销，而且访问 /logout不会注销，而是404
-        // 测试发现有时候/myLogout 并没真正的注销，而是401，why？ 原因是logoutUrl需要受保护
-        // 这里需要 保护起来， 否则也是 401， Full authentication is required to access this resource
-        .logoutUrl("/myLogout")
-        // defaultTarget must start with '/' or with 'http(s)'
-        .logoutSuccessUrl("/myLogoutSuccessUrl")
-        .permitAll()
-        // .logoutSuccessHandler(tigerLogoutSuccessHandler)  //url和Handler只能配置一个
+                // 设置logoutUrl之后，再访问/logout会出现401（如果不放行）， 或者404
+                // 测试发现， /myLogout、 /logout 两个端点都可以注销成功，why？ 按理说只有一个;  测试发现如果antMatchers 发现/logout，则只有logoutUrl可以注销，而且访问 /logout不会注销，而是404
+                // 测试发现有时候/myLogout 并没真正的注销，而是401，why？ 原因是logoutUrl需要受保护
+                // 这里需要 保护起来， 否则也是 401， Full authentication is required to access this resource
+                .logoutUrl("/myLogout")
+                // defaultTarget must start with '/' or with 'http(s)'
+                .logoutSuccessUrl("/myLogoutSuccessUrl")
+                .permitAll()
+                // .logoutSuccessHandler(tigerLogoutSuccessHandler)  //url和Handler只能配置一个
 //        .deleteCookies("JSESSIONID")//清除cook键值
 
-        .and()
+                .and()
 
-        // 这里的sessionManagement 并不能影响到AuthorizationServer， 因为..
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                // 这里的sessionManagement 并不能影响到AuthorizationServer， 因为..
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
         ;
 
     }
@@ -162,17 +171,30 @@ public class MySecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-            .withUser(username)
-            .password(passwordEncoder.encode(password))
-            .roles("USER")
-        .and()
-        .withUser("b")
-                .password(passwordEncoder.encode("2"))
-                .roles("ADMIN")
-        ;
+        auth.userDetailsService(userDetailsService());
+//        auth.inMemoryAuthentication()
+//            .withUser(username)
+//            .password(passwordEncoder.encode(password))
+//            .roles("USER")
+//        .and()
+//        .withUser("b")
+//                .password(passwordEncoder.encode("2"))
+//                .roles("ADMIN")
+//        ;
     }
 
+    @Bean // https://cloud.tencent.com/developer/article/1680007
+    @Override
+    public UserDetailsService userDetailsService() {
+        Collection<? extends GrantedAuthority> authorities = new HashSet<>();
+        UserDetails u1 = new User("a", passwordEncoder.encode("1"), authorities);
+        UserDetails u2 = new User("b", passwordEncoder.encode("2"), authorities);
+        UserDetails u3 = new User("c", passwordEncoder.encode("3"), authorities);
+        InMemoryUserDetailsManager userDetailsManager = new InMemoryUserDetailsManager(u1);
+        userDetailsManager.createUser(u2);
+        userDetailsManager.createUser(u3);
+        return userDetailsManager;
+    }
 
     @Bean // https://blog.csdn.net/weijianpeng2013_2015/article/details/97269048
     @Override

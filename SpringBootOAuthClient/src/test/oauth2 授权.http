@@ -10,15 +10,24 @@ Content-Type: application/x-www-form-urlencoded
 username=a&password=1
 
 
-### 2 获取有效的code, 返回的code 只能被使用一次！ 而注意 state 是参数，不是返回值， 是可以随便填写的，会被原样返回
+### 2 获取有效的code, 返回的code 只能被使用一次！ 而注意 state 是参数，不是返回值， 是可以随便填写的，会被原样返回； scope 参数可以不填，但是如果填写了，就必须正确！
 POST http://192.168.1.103:8081/auth/oauth/authorize?response_type=code&client_id=R2dpxQ3vPrtfgF72&scope=user_info&state=sss&redirect_uri=http://192.168.1.103:8082/doLogin
-Cookie: JSESSIONID=08A5B2525992B012FEF0CFB276F4EF95; Path=/auth; HttpOnly
+Cookie: JSESSIONID=974E16E1604D677DDFBE754B04CD0A44; Path=/auth; HttpOnly
 
 
 ### 3 通过code获取token
+### 注意事项：
+#
+#必须是POST请求。
+#只有scope参数是可选的，其它参数都是必选的。
+#grant_type参数的值必须为固定值authorization_code，code参数的值必须是刚才获取到的授权码，client_id、client_secret、redirect_uri等参数的值必须与配置中的保持一致。
+#client_id和client_secret也可以使用Basic认证的方式传递给授权服务器
+#————————————————
+#版权声明：本文为CSDN博主「JavaBigData1024」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+#原文链接：https://blog.csdn.net/weixin_44516305/article/details/88886839
 #?client_id=7dd33c1a56813db7f797&redirect_uri=http://localhost:8999/v1/user/login&client_secret=de51eecf4d0b887ee9ddbe13019d664d09a6150f&code=69df6eb702a1422ff596
 POST http://192.168.1.103:8081/auth/oauth/token?client_id=R2dpxQ3vPrtfgF72&client_secret=123456&grant_type=authorization_code&redirect_uri=http://192.168.1.103:8082/doLogin&code=iI8H7R&state=sss
-Cookie: JSESSIONID=80AED60A43704360D84A74DA560887B7; Path=/auth; HttpOnly
+Cookie: JSESSIONID=974E16E1604D677DDFBE754B04CD0A44; Path=/auth; HttpOnly
 
 为什么返回 401：
 {
@@ -29,39 +38,41 @@ Cookie: JSESSIONID=80AED60A43704360D84A74DA560887B7; Path=/auth; HttpOnly
   "path": "/auth/oauth/token"
 }
 
-
-### 下面是抓包的结果； 只能通过 Authorization 进行校验？ Basic的值是怎么来的？ 是
+### 下面是抓包的结果； 只能通过 Authorization 进行校验？ Basic的值是怎么来的？ 是； scope参数可以没有，但如果有，必须正确。
+# 其中 UjJkcHhRM3ZQcnRmZ0Y3MjoxMjM0NTY= 是client_id:client_secret 即R2dpxQ3vPrtfgF72:123456 base64 的结果；
+# 其实也可以把client_id/client_secret 作为参数传递！—— 试验行不通..
 POST http://192.168.1.103:8081/auth/oauth/token
 Accept: application/json;charset=UTF-8
 Content-Type: application/x-www-form-urlencoded;charset=UTF-8
-#Cookie: JSESSIONID=80AED60A43704360D84A74DA560887B7; Path=/auth; HttpOnly
+#Cookie: JSESSIONID=974E16E1604D677DDFBE754B04CD0A44; Path=/auth; HttpOnly
 Authorization: Basic UjJkcHhRM3ZQcnRmZ0Y3MjoxMjM0NTY=
 
-grant_type=authorization_code&code=5wWg8M&redirect_uri=http%3A%2F%2F192.168.1.103%3A8082%2FdoLogin
+client_id=R2dpxQ3vPrtfgF72&client_secret=12345&grant_type=authorization_code&scope=user_info&code=N2M7RK&redirect_uri=http%3A%2F%2F192.168.1.103%3A8082%2FdoLogin
 
-### password 模式 todo， 这里行不通，貌似不支持 grant_type=password，Unsupported grant type: password
-# 原因： 密码模式，必须配置AuthenticationManager，不然不生效； 默认是4种认证模式； 参见： AuthorizationServerEndpointsConfigurer.getDefaultTokenGranters
-# 自定义的AuthServerConfig#configure 配置的authorizedGrantTypes并没有用！ why？ todo
-POST http://192.168.1.103:8081/auth/oauth/token?client_id=R2dpxQ3vPrtfgF72&client_secret=123456&username=a&password=1
-Accept: application/json;charset=UTF-8
-Content-Type: application/x-www-form-urlencoded;charset=UTF-8
-#Cookie: JSESSIONID=80AED60A43704360D84A74DA560887B7; Path=/auth; HttpOnly
-Authorization: Basic UjJkcHhRM3ZQcnRmZ0Y3MjoxMjM0NTY=
+### 另外一种形式
+#grant_type=authorization_code&scope=user_info&code=SbGhKO&redirect_uri=http%3A%2F%2F192.168.1.103%3A8082%2FdoLogin
 
-grant_type=password&code=NN1x1O&redirect_uri=http%3A%2F%2F192.168.1.103%3A8082%2FdoLogin
-
-
-
-### 获取用户信息  &scope=user_info # 可以有两个同名JSESSIONID的Cookie
+### 4 获取用户信息; 这里无需scope参数； &scope=user_info # 可以有两个同名JSESSIONID的Cookie
 GET http://192.168.1.103:8081/auth/user/me
 Accept: application/json
-Authorization: Bearer f98b1b90-2110-416c-9418-d06b277160a8
+Authorization: Bearer bfa38b35-1ad7-4146-bea6-194ae6da12bf
 User-Agent: Java/1.8.0_231
 Host: 192.168.1.103:8081
 Connection: keep-alive
-Cookie: JSESSIONID=52E2B06BCD0376DF899F046E1C82CDFA; JSESSIONID=6DFC6E266D7BAAF6302D358DC9E748CF
+#Cookie: JSESSIONID=52E2B06BCD0376DF899F046E1C82CDFA;  JSESSIONID 不需要！
 
 
+#################################### 密码授权方式 #################################################################################
+### password 模式，这里开始行不通，貌似不支持 grant_type=password，Unsupported grant type: password
+# 原因： 密码模式，必须配置AuthenticationManager，不然不生效； 默认是4种认证模式； 参见： AuthorizationServerEndpointsConfigurer.getDefaultTokenGranters
+# 自定义的AuthServerConfig#configure 配置的authorizedGrantTypes并没有用！ why？ todo
+# 注意，这里url 无须传递client_id=R2dpxQ3vPrtfgF72&client_secret=123456&
+POST http://192.168.1.103:8081/auth/oauth/token?username=a&password=1
+Accept: application/json;charset=UTF-8
+Content-Type: application/x-www-form-urlencoded;charset=UTF-8
+Authorization: Basic UjJkcHhRM3ZQcnRmZ0Y3MjoxMjM0NTY=
+
+grant_type=password&code=NN1x1O&redirect_uri=http%3A%2F%2F192.168.1.103%3A8082%2FdoLogin
 
 ### 直接访问认证服务器是ok的
 GET http://192.168.1.103:8081/auth/oauth/token?grant_type=password&client_id=client_2&client_secret=secret_2&username=admin&password=123&scope=all
@@ -71,16 +82,16 @@ GET http://192.168.1.103:8081/auth/oauth/token?grant_type=password&client_id=cli
 #客户端使用用户的账号和密码到授权服务器换取访问令牌
 #客户端使用访问令牌到资源服务器获取用户资源
 #获取令牌： 使用postman访问以下地址到授权服务器获取访问令牌和刷新令牌：
+
+### 下面的方式行不通， 401 Unauthorized
 POST http://192.168.1.103:8081/auth/oauth/token?client_id=R2dpxQ3vPrtfgF72&client_secret=123456&grant_type=password&redirect_uri=http://192.168.1.103:8082/doLogin&code=B52tTB&state=SjBEGfCx5GD7uJ76dhflHLvsbHlUQ028Q7BeOvkz-D4%3D
 
-###
-POST http://192.168.1.103:8081/auth/oauth/token?client_id=R2dpxQ3vPrtfgF72&client_secret=123456&grant_type=password&redirect_uri=http://192.168.1.103:8082/doLogin&code=ee&state=SjBEGfCx5GD7uJ76dhflHLvsbHlUQ028Q7BeOvkz-D4%3D
 
 
 ###
 
 
-### 简化授权方式
+#################################### 简化授权方式 #################################################################################
 #简化授权方式是相对于授权码授权方式而言的，因为比授权码授权方式少了授权码这一环节，所以叫做简化授权方式。
 #
 #3.3.1 配置说明
@@ -94,21 +105,85 @@ POST http://192.168.1.103:8081/auth/oauth/token?client_id=R2dpxQ3vPrtfgF72&clien
 #————————————————
 #版权声明：本文为CSDN博主「JavaBigData1024」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
 #原文链接：https://blog.csdn.net/weixin_44516305/article/details/88886839
+### implicit模式 的 response_type参数的值必须为固定值token。 请求方法可以是GET
+GET http://192.168.1.103:8081/auth/oauth/authorize?response_type=token&client_id=R2dpxQ3vPrtfgF72&redirect_uri=http://192.168.1.103:8082/doLogin&scope=user_infoa
+Accept: application/json;charset=UTF-8
+Cookie: JSESSIONID=974E16E1604D677DDFBE754B04CD0A44; Path=/auth; HttpOnly
+Content-Type: application/x-www-form-urlencoded;charset=UTF-8
+#Authorization: Basic UjJkcHhRM3ZQcnRmZ0Y3MjoxMjM0NTY=  测试发现， response_type=token方式无需Authorization: Basic
+
+### 回调 o client，然后o client因为之前没有发起请求，导致找不到对应的authorize请求，返回 invalid_request错误
+http://192.168.1.103:8082/doLogin#access_token=f98b1b90-2110-416c-9418-d06b277160a8&token_type=bearer&expires_in=12943&userInfoAddition=%7B%22accountNonExpired%22:true,%22accountNonLocked%22:true,%22authorities%22:%5B%7B%22authority%22:%22ROLE_USER%22%7D%5D,%22credentialsNonExpired%22:true,%22enabled%22:true,%22username%22:%22a%22%7D
+#可以发现直接在url中携带了access_token等信息
+#当然了，使用了implicit模式，其实就没必要使用spring security oauth2的client模块了，因为直接走浏览器模式
+
+响应：
+{
+  "msg": "fail",
+  "msg2": "????",
+  "code": 500,
+  "ex": "[invalid_request] "
+}
+
+### 错误示例
+## implicit模式不需要访问/auth/oauth/token， 无需也不能设置grant_type=implicit， 否则： Implicit grant type not supported from token endpoint
 POST http://192.168.1.103:8081/auth/oauth/token?client_id=R2dpxQ3vPrtfgF72&client_secret=123456&username=a&password=1
 Accept: application/json;charset=UTF-8
 Content-Type: application/x-www-form-urlencoded;charset=UTF-8
-#Cookie: JSESSIONID=80AED60A43704360D84A74DA560887B7; Path=/auth; HttpOnly
+#Cookie: JSESSIONID=974E16E1604D677DDFBE754B04CD0A44; Path=/auth; HttpOnly
 Authorization: Basic UjJkcHhRM3ZQcnRmZ0Y3MjoxMjM0NTY=
 
 grant_type=implicit&code=NN1x1O&redirect_uri=http%3A%2F%2F192.168.1.103%3A8082%2FdoLogin
 
-//implicit模式不需要访问/auth/oauth/token， 否则： Implicit grant type not supported from token endpoint
 
-### implicit模式 的 response_type参数的值必须为固定值token。
-http://192.168.1.103:8081/auth/oauth/authorize?response_type=token&client_id=R2dpxQ3vPrtfgF72&redirect_uri=http://192.168.1.103:8082/doLogin&scope=user_info
+
+#################################### 客户端授权方式 #################################################################################
+### 客户端授权方式的流程是：
+#
+#客户端以自己的名义到授权服务器换取访问令牌
+#客户端使用访问令牌到资源服务器获取用户资源
+#获取令牌： 使用postman访问以下地址到授权服务器获取访问令牌和刷新令牌：
+#原文链接：https://blog.csdn.net/weixin_44516305/article/details/88886839
+POST http://192.168.1.103:8081/auth/oauth/token?grant_type=client_credentials&scope=user_info
 Accept: application/json;charset=UTF-8
-Cookie: JSESSIONID=DDE8E4C7DBFF57EC3F39EFDC80CBBBFC; Path=/auth; HttpOnly
 Content-Type: application/x-www-form-urlencoded;charset=UTF-8
-#Cookie: JSESSIONID=80AED60A43704360D84A74DA560887B7; Path=/auth; HttpOnly
-#Authorization: Basic UjJkcHhRM3ZQcnRmZ0Y3MjoxMjM0NTY=
+#Cookie: JSESSIONID=974E16E1604D677DDFBE754B04CD0A44; Path=/auth; HttpOnly ## Cookie没有用，Authorization: Basic是必须的， 否则401 Unauthorized
+Authorization: Basic UjJkcHhRM3ZQcnRmZ0Y3MjoxMjM0NTY=
 ###
+# 注意事项：
+#
+#必须是POST请求。
+#只有scope参数是可选的，其它参数都是必选的。
+#grant_type参数的值必须为固定值client_credentials，client_id、client_secret等参数的值必须与配置中的保持一致。
+#client_id和client_secret也可以使用Basic认证的方式传递给授权服务器，如3.1.2中所示。
+#获取资源： 获取到访问令牌（access_token）之后就可以使用访问令牌到资源服务器获取用户资源，如3.1.2中所示。
+#————————————————
+#版权声明：本文为CSDN博主「JavaBigData1024」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+#原文链接：https://blog.csdn.net/weixin_44516305/article/details/88886839
+
+#client_credentials的时候， 参数可以不用传递 client_id、client_secret， 而是通过Authorization: Basic 传递
+# POST http://192.168.1.103:8081/auth/oauth/token?grant_type=client_credentials&client_id=R2dpxQ3vPrtfgF72&client_secret=123456&scope=user_info
+
+
+#################################### refreshToken方式 #################################################################################
+# 刷新之后， 之前旧的access_token 就立即失效！之前使用旧的access_token 进行操作，就会失败！
+# 但是并不是说所有之前的旧的access_token 会立即失效，而是说和refresh_token配对的旧的access_token 会立即失效!
+POST http://192.168.1.103:8081/auth/oauth/token?grant_type=refresh_token&refresh_token=84f12580-56cd-4dbd-967b-e6ac5f9fe320
+Accept: application/json;charset=UTF-8
+Content-Type: application/x-www-form-urlencoded;charset=UTF-8
+Authorization: Basic UjJkcHhRM3ZQcnRmZ0Y3MjoxMjM0NTY=
+
+#通过请求体设置参数grant_type、refresh_token也是可以的 grant_type=refresh_token&refresh_token=84f12580-56cd-4dbd-967b-e6ac5f9fe320
+
+### Authorization: Basic 不能少
+GET http://192.168.1.103:8081/auth/user/refreshToken?refreshToken=84f12580-56cd-4dbd-967b-e6ac5f9fe320&client_id=R2dpxQ3vPrtfgF72&client_secret=123456&username=a&password=1
+Accept: application/json;charset=UTF-8
+Content-Type: application/x-www-form-urlencoded;charset=UTF-8
+Authorization: Basic UjJkcHhRM3ZQcnRmZ0Y3MjoxMjM0NTY=
+
+###
+
+
+
+
+

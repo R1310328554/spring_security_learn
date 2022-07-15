@@ -116,7 +116,7 @@ public class AuthRefreshTokenController {
         } catch (HttpProcessException e) {
             e.printStackTrace();
             log.error("获取刷新令牌报错:{},具体错误为:{}", e.getMessage(), e);
-            return CommonResult.fail("新令牌获取失败" + e.getMessage());
+            return CommonResult.failed("新令牌获取失败" + e.getMessage());
         }
     }
 }

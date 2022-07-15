@@ -3,10 +3,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.oauth2.provider.*;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -41,6 +44,17 @@ public class RedisConfig {
     public ClientDetailsService redisClientDetailsService(){
         return new RedisClientDetailsService(redisConnectionFactory);
     }
+
+    /*
+    @Bean // jose才有
+    AuthenticationManagerResolver<HttpServletRequest> tokenAuthenticationManagerResolver
+            (JwtDecoder jwtDecoder, OpaqueTokenIntrospector opaqueTokenIntrospector) {
+        AuthenticationManager jwt = new ProviderManager(new JwtAuthenticationProvider(jwtDecoder));
+        AuthenticationManager opaqueToken = new ProviderManager(
+                new OpaqueTokenAuthenticationProvider(opaqueTokenIntrospector));
+        return (request) -> useJwt(request) ? jwt : opaqueToken;
+    }
+    */
 
 }
 
