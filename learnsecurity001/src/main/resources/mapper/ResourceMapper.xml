@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lk.learn.dynamicAuth.ResourceMapperDao">
+
+    <resultMap id="ResourcesMap" type="com.lk.learn.dynamicAuth.Resources">
+        <id column="id" property="id"/>
+        <result column="pattern" property="pattern"/>
+        <collection property="roles" ofType="com.lk.learn.dynamicAuth.Role">
+            <id column="roleId" property="id"/>
+            <result column="name" property="name"/>
+            <result column="description" property="description"/>
+        </collection>
+    </resultMap>
+
+    <select id="getAllResources" resultMap="ResourcesMap">
+        SELECT
+         r.*,
+         re.id AS roleId,
+         re.`name`,
+         re.description
+        FROM resources AS r
+        LEFT JOIN role_resource AS rr  ON r.id = rr.resource_id
+        LEFT JOIN role AS re ON re.id = rr.role_id
+    </select>
+
+    <select id="getAllResources2" resultMap="ResourcesMap">
+        SELECT
+         r.*,
+         re.id AS roleId,
+         re.`name`,
+         re.description
+        FROM resources AS r
+        LEFT JOIN role_resource AS rr  ON r.id = rr.resource_id
+        LEFT JOIN role AS re ON re.id = rr.role_id
+        WHERE INSTR('${requestUrl}', SUBSTR(r.pattern, 1, LENGTH(r.pattern) - 2));
+    </select>
+
+</mapper>
