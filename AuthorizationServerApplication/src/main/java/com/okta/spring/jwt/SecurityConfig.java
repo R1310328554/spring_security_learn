@@ -138,9 +138,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("as")
 .permitAll() // 1
                 .loginProcessingUrl("aa")
-.permitAll() // 2 ； 1、2多次调用， 其实效果是会覆盖的，最后一次调用生效。
+.permitAll() // 2 ； 1、2多次调用， 其实效果是会覆盖的，最后一次调用生效。 permitAll 的神奇之处就是 all！！！
+                // 只要一次 permitAll， 就全部permit了， 统统的允许访问！ https://blog.csdn.net/u012702547/article/details/106800446
+                // 出乎意料的是， 并没有permit() 方法，就是说，如果我想只允许一个路径端点，怎么办？
+
                 // Ensures the urls for failureUrl(String) as well as for the HttpSecurityBuilder, the getLoginPage and getLoginProcessingUrl are granted access to any user.
-                .permitAll(false);
+                .permitAll(false); // 这个false 会覆盖之前的两次 all吗？ false 是意味着denyAll吗？ todo
 
 //        httpSecurity.headers().xssProtection().
 
@@ -164,7 +167,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.antMatcher("").httpBasic();// 同时 一部分端点  httpBasic
 
         // 直接httpSecurity 后面的， 只能是 antMatcher， 没有s， mvcMatcher也一样！
-        // 他们只能配置一个， 但是如果使用requestMatchers， 则可以配置多个， 这个就是区别！
+        // 他们只能配置一个， 但是如果使用requestMatchers， 则可以配置多个， 这个就是区别！ requestMatchers， s表示复数，顾名思义！
         httpSecurity.mvcMatcher("").oauth2Login();
 
         // requestMatchers直接跟httpSecurity后面， 同 antMatcher、mvcMatcher 一样， 是用来指定当前HttpSecurity 工作范围的！！

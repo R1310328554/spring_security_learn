@@ -7,6 +7,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
+
+/**
+ *  全部json 格式认证、交换数据！
+ */
 @SpringBootApplication
 //@EnableResourceServer
 //@EnableAuthorizationServer // 必须要自定义

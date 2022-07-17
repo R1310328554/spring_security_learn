@@ -1,15 +1,26 @@
-package com.okta.spring.jwt;
+package com.okta.spring.AuthorizationServerApplication;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class BcEncrtpt {
     public static void main(String[] args) {
+
+        /*
+            Spring Security 提供了多种密码加密方案，官方推荐使用 BCryptPasswordEncoder：
+            BCryptPasswordEncoder 使用 BCrypt 强哈希函数，开发者在使用时可以选择提供 strength 和 SecureRandom 实例。
+            strength 取值在 4~31 之间（默认为 10 xxx , 默认是 -1）。strength 越大，密钥的迭代次数越多（密钥迭代次数为 2^strength）
+         */
         // 创建密码解析器
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         // 对密码进行加密
-        String song = bCryptPasswordEncoder.encode("song");
+        String song = bCryptPasswordEncoder.encode("1");
         // 打印加密之后的数据
         System.out.println("加密之后数据：\t" + song);
+
+        song = bCryptPasswordEncoder.encode("123");
+        // 打印加密之后的数据
+        System.out.println("加密之后数据：\t" + song);
+
         //判断原字符加密后和加密之前是否匹配
         boolean result = bCryptPasswordEncoder.matches("song", song);
         // 打印比较结果

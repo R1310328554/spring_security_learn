@@ -53,6 +53,7 @@ public class ResouceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
+                .antMatchers("/free/**").permitAll()
                 .antMatchers("/**")
                  //   .access("isAuthenticated()")
                  //   .access("#oauth2.clientHasRole('ROLE_ADMIN')")
