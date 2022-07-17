@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>文件上传</title>
+</head>
+<body>
+
+<h1>文件上传</h1>
+
+
+
+<table border="1px">
+    <tr>
+        <td>详情</td>
+        <td>文件名</td>
+    </tr>
+    <!-- 同时取两个数组的元素 -->
+    <c:forEach items="${multiFileDomain.description}" var="description"
+               varStatus="loop">
+        <tr>
+            <td>${description}</td>
+            <td>${multiFileDomain.myfile[loop.count-1].originalFilename}</td>
+        </tr>
+    </c:forEach>
+    <!-- fileDomain.getMyfile().getOriginalFilename() -->
+</table>
+
+
+</body>
+</html>

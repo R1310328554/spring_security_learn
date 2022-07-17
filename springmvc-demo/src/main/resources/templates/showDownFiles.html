@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>result</title>
+</head>
+<body>
+
+<h1>result</h1>
+
+
+<table>
+    <tr>
+        <td>被下载的文件名</td>
+    </tr>
+    <!--遍历 model中的 files-->
+    <c:forEach items="${files}" var="filename">
+        <tr>
+            <td>
+                <a href="${pageContext.request.contextPath }/down?filename=${filename}">${filename}</a>
+            </td>
+        </tr>
+    </c:forEach>
+</table>
+
+
+</body>
+</html>

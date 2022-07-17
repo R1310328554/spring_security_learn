@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>文件上传</title>
+</head>
+<body>
+
+<h1>文件上传</h1>
+
+文件描述：
+<div th:text="${fileDomain.description }"></div>
+
+<br>
+<!-- fileDomain.getMyFile().getOriginalFilename()-->
+
+文件名称：
+<div th:text="${fileDomain.myfile.originalFilename }"></div>
+
+
+</body>
+</html>

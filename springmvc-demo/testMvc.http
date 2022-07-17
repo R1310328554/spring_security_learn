@@ -1,0 +1,15 @@
+GET http://192.168.1.103:8080/basic/test
+Accept: */*
+#Content-Type: */*  不能是 "Content type '*/*' not supported",
+#Accept: application/json;charset=UTF-8
+Content-Type: application/json
+Cache-Control: no-cache
+
+### Accept、Content-Type请求头 必须要包容，才能不报错； 否则：
+{
+  "msg": "Could not find acceptable representation",
+  "code": 100
+}
+
+
+
