@@ -1,6 +1,10 @@
 spring_security、 oauth2 学习demo
 
-# 已经完成功能
+# 版本
+spring-boot-starter-parent：2.1.3.RELEASE
+
+
+# 已经完成
 - 支持weibo、github、自定义oauth2服务端等多种方式
 - 支持各种自定义登录、登出页
 - 支持token存jdbc、redis
@@ -20,6 +24,8 @@ spring_security、 oauth2 学习demo
 默认情况下，  
 访问 http://192.168.1.103:8082/  是oauth2 客户端  
 访问 http://192.168.1.103:8081/auth/  是oauth2 客户端
+
+192.168.1.103 是改成你本地ip，需要局域网ip，不能是localhost 
 
 ### 如果需要测试 Spring security 可以单独启动 MyResourceServerApplication
 

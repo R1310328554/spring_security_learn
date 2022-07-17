@@ -30,7 +30,7 @@ GET http://192.168.1.103:8081/auth/oauth/check_token?token=4a26fe3c-39c7-464b-88
 ### 测试资源服务器
 GET http://192.168.1.103:8083/res/aa
 Accept: application/json
-Authorization: Bearer 068225f6-3f91-4a19-9a11-1244e2587ce3
+Authorization: Bearer 6ba3f708-96ac-4dc2-b75f-dcb44dbcb1f0
 
 ### 404，why —— 手动加上token_key端点，即创建TokenKeyEndpoint bean 就好了; 不过还是 AccessDeniedException("You need to authenticate to see a shared key")
 GET http://192.168.1.103:8081/auth/oauth/token_key

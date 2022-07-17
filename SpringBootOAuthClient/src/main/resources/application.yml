@@ -64,7 +64,14 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017/aimeeTest2
 
-
+  devtools:
+    restart:
+      enabled: true
+      # 需要热更新的包
+      additional-paths: src/main/java,src/main/resources/static
+      # 不需要热更新的包
+      exclude: src/main/java/**/CodeGenerator.java
+#  原文链接：https://blog.csdn.net/lorogy/article/details/117712737
 
   mvc:
     view:
