@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Secured Page</title>
+</head>
+<body>
+<h1>defaultSuccessUrl Page</h1>
+
+
+
+defaultSuccessUrl 默认是？
+直接访问 LoginPage， 比如http://192.168.1.103:8080/myLogin， 那么就不会重定向到登录之前的url， 那么就会到defaultSuccessUrl来。
+
+
+如果配置了 boolean alwaysUse = true（默认false），
+比如 defaultSuccessUrl("/defaultSuccessUrl", true)， 那么会一直使用/defaultSuccessUrl， 登录之前的url被忽略
+<!-- 如果 doLogin 被放行了， 那么 doLogin对应的当前 sec页面， 不需要登录页可以访问..-->
+
+<span th:text="${#authentication}"></span>
+</body>
+</html>

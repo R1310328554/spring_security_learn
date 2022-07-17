@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>退出挽留页面</h1>
+
+<!--myLogout  /myLogout 都可以； myLogout 是相对路径， /myLogout 是绝对路径-->
+<a href="myLogout">退出系统</a>
+
+<h1 th:text="迎您来到Thymeleaf">欢迎您访问 xx系统首页</h1>
+
+
+<div class="container">
+    <form class="form-signin" method="post" action="/myLogout">
+        <h2 class="form-signin-heading">Are you sure you want to log out? 使用 POST /myLogout</h2>
+<!--        <input name="_csrf" type="hidden" value="e4b990cd-a807-48a1-99a6-4d0e7f65816c" />-->
+        <input type='hidden' th:name='${_csrf.parameterName}' th:value='${_csrf.token}'>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Log Out</button>
+    </form>
+
+
+
+
+<div class="container">
+    <form class="form-signin" method="post" action="/logout">
+        <h2 class="form-signin-heading">Are you sure you want to log out?  使用 POST /logout </h2>
+<!--        <input name="_csrf" type="hidden" value="e4b990cd-a807-48a1-99a6-4d0e7f65816c" />-->
+        <input type='hidden' th:name='${_csrf.parameterName}' th:value='${_csrf.token}'>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Log Out</button>
+    </form>
+</div>
+
+
+
+</body>
+</html>

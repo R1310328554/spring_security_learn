@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Secured Page</title>
+</head>
+<body>
+<h1>successForwardUrl Page</h1>
+
+successForwardUrl 不会在浏览器端重定向， 而是服务器端重定向， 即浏览器地址栏 保持登录的地址url：http://192.168.1.103:8080/doLogin
+
+defaultSuccessUrl 优先级 高于 successForwardUrl ！
+如果同时配置 defaultSuccessUrl、successForwardUrl ， 那么使用successForwardUrl， 而defaultSuccessUrl 被忽视！
+
+successForwardUrl 其实不需要是一个页面， 也可以是json，比如通过 @ResponseBody 返回即可。
+
+<span th:text="${#authentication}"></span>
+</body>
+</html>

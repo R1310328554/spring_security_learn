@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表单登录Title</title>
+</head>
+<body>
+<h1>标准登录页面</h1>
+<h3>表单登录 test </h3>
+
+<!--// /login2 不需要是一个后端的endpoint！ 即使提供了一个相应的RequestMapping， 也不会执行它！-->
+<!--/login  是 绝对路径， 就是。。 这里需要 /auth/doLogin ， 才能和 loginProcessingUrl("/doLogin") 匹配..-->
+<!--这里form action="/doLogin" method="post" 必须是post 方法！ 否则.. 一直都是 loginPage页面，即当前页面； 因为没有登录会被302到登录页面..-->
+<!-- 当然，如果"/doLogin"被放行， 那么会进入 /doLogin controller或页面-->
+<!--<form action="/doLogin" method="get"> 不行 ！！-->
+
+<form action="/doLogin" method="post">
+    <table>
+        <tr>
+            <td>用户名:</td>
+            <td><input type="text" name="username"/></td>
+        </tr>
+
+        <tr>
+            <td>密码:</td>
+            <td><input type="password" name="password"/></td>
+        </tr>
+
+        <tr>
+            <td colspan="2">
+                <button type="submit">登录</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <script th:src="@{/js/my.js}"></script>
+</head>
+<body>
+<h1>Spring Security SSO</h1>
+<a href="securedPage">securedPage</a>
+<a href="myLogout">Logout</a>
+
+<div th:text="${name}">name是bigsai(我是离线数据)</div>
+
+<!--
+这种方式无法使用thymeleaf， 必须使用th: 开头的属性
+<input type='text' name='${_csrf.parameterName}' value='${_csrf.token}'>-->
+
+<!--https://developer.aliyun.com/article/769977#slide-3-->
+<span th:text="${_csrf.parameterName}+ ' 的token是'"> (我是离线数据)</span> = <span th:text="${_csrf.token}"> (我是离线数据)</span>
+
+
+
+</body>
+</html>

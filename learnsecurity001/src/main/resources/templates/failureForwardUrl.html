@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>failure Forward Url Page</h1>
+
+登录失败， 可能用户名、密码不对？
+
+failureForwardUrl 不会在浏览器端重定向， 而是服务器端重定向， 即浏览器地址栏 保持登录的地址url：http://192.168.1.103:8080/doLogin
+
+
+failureUrl表示登录失败后的重定向到配置的页面，重定向是客户端的跳转，不方便携带请求失败的异常信息。
+
+failureForwardUrl是服务端的跳转，可以携带登录异常信息。登录失败，自动跳转回登录页面，将错误信息展示出来。
+
+</body>
+</html>
