@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>result</title>
+</head>
+<body>
+
+<h1>静态资源 ！！</h1>
+
+
+<div th:text="${request}"></div>
+
+<h1>单文件上传</h1>
+<form action="/fileupload"
+      method="post" enctype="multipart/form-data">
+    选择文件：<input type="file" name="myfile"><br>
+    文件描述：<input type="text" name="description"><br>
+
+    <input type="submit" value="提交">
+</form>
+
+
+<h1>多文件上传</h1>
+<form action="/multifile"
+      method="post" enctype="multipart/form-data">
+    选择文件：<input type="file" name="myfile"><br>
+    文件描述：<input type="text" name="description"><br>
+
+    选择文件2：<input type="file" name="myfile"><br>
+    文件描述2：<input type="text" name="description"><br>
+    选择文件3：<input type="file" name="myfile"><br>
+    文件描述3：<input type="text" name="description"><br>
+
+    <input type="submit" value="提交">
+</form>
+
+
+</body>
+</html>

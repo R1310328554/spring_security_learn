@@ -27,6 +27,15 @@ import org.springframework.web.servlet.ModelAndView;
 // 因为浏览器在 响应content-type为 application/octet-stream格式的时，无法渲染 jsp 文件
 public class JspController {
 
+    @RequestMapping(value = "")
+    public ModelAndView default2() {
+        ModelAndView mv=new ModelAndView();
+        mv.addObject("msg","default2 ");
+        System.out.println("JspController.default2");
+        mv.setViewName("result");
+        return mv;
+    }
+
     @RequestMapping(value = "/say")
     public ModelAndView say() {
         ModelAndView mv=new ModelAndView();

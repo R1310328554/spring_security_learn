@@ -5,11 +5,44 @@ Accept: */*
 Content-Type: application/json
 Cache-Control: no-cache
 
-### Accept、Content-Type请求头 必须要包容，才能不报错； 否则：
+###
+Accept、Content-Type请求头 必须要包容，才能不报错； 否则：
 {
   "msg": "Could not find acceptable representation",
   "code": 100
 }
 
 
+### 一直404 ， OMG ! 需要spring.mvc.pathmatch.use-suffix-pattern 设置为true，之前的版本可能是true，现在的版本已经默认为false！
+# 为什么 手动访问和 浏览器访问返回的内容，差别那么大?..
+GET http://192.168.1.103:8080/nego/hi.json
+Accept: */*
+
+###
+GET http://192.168.1.103:8080/nego/hi.xml
+Accept: */*
+
+###
+GET http://192.168.1.103:8080/nego/hi
+Accept: */*
+
+###
+GET http://192.168.1.103:8080/nego/hi
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+
+
+###
+GET http://192.168.1.103:8080/nego/hi?format=xxm
+Accept: */*
+
+###
+GET http://192.168.1.103:8080/nego/hi?format=xml
+Accept: */*
+
+
+###
+GET http://192.168.1.103:8080/nego/hi?format=json
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+
+###
 
