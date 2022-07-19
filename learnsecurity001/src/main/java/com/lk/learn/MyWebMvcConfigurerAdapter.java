@@ -35,7 +35,10 @@ public class MyWebMvcConfigurerAdapter implements WebMvcConfigurer {
                  */
                 .addResourceLocations("classpath:/favicon.ico")// 应该是个路径， 不能是个具体文件名！
                 .addResourceLocations("classpath:/META-INF/resources/")
-                .addResourceLocations("classpath:/resources/")// 访问 /js/a.html, 会到 /resources/目录下查找/js/a.html，相当于是查找 /resources/js/a.html
+
+                // 这里的resources 不是 /src/main/resources 目录！ /src/main/resources是 maven项目的概念，不会出现在最终的target之中！
+                // 访问 /js/a.html, 会到 /resources/目录下查找/js/a.html，相当于是查找 /resources/js/a.html
+                .addResourceLocations("classpath:/resources/")
 
 //                .addResourceLocations("classpath:/templates/")
                 .addResourceLocations("classpath:/static/")

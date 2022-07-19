@@ -379,6 +379,7 @@ Both the RequestMappingHandlerAdapter and the ExceptionHandlerExceptionResolver 
 其基本逻辑是
 通过@Bean 创建一个mvc相关的实例，比如设名为Xyz，然后提供 configureXyz 的方法定制化，或提供AddXyz 的方法添加更多的定制化的处理器。
 
+对于RequestMappingHandlerMapping ，其中的mappingRegistry保存了所有的 controller方法！
 
 # viewControllerHandlerMapping
 直接处理url，返回前端视图； 不进行任何其他逻辑处理。 当然 interceptor 之类的还是需要执行的，是少不了的！
