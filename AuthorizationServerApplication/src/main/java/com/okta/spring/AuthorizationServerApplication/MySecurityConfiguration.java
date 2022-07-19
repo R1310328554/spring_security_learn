@@ -25,7 +25,6 @@ import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -52,7 +51,11 @@ public class MySecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
+//        web.httpFirewall()
+        web.ignoring().mvcMatchers("/**.html"); // 好像不能 **.html这样！ 必须是 / 开头！
+        // 静态资源方向放行； 如果设置不对，则不起作用！ 依然被拦截，依然302到login page
         web.ignoring().antMatchers("/assets/**", "/css/**", "/templates/**", "/static/**", "/images/**");
+        web.ignoring().antMatchers("/js/**", "/js/**");
     }
 
 

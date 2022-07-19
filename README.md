@@ -1,5 +1,12 @@
 spring_security、 oauth2 学习demo
 
+其中
+- AuthorizationServerApplication 是oauth2服务端，包括 认证服务器、资源服务器
+- SpringBootOAuthClient 是oauth2客户端
+- oauth2-ResourceServer 是oauth2 资源服务器端
+- springmvc-demo 是Spring Mvc 学习demo
+- learnsecurity001 是Spring Security学习demo
+
 # 版本
 spring-boot-starter-parent：2.1.3.RELEASE
 

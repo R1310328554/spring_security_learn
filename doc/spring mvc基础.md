@@ -309,14 +309,26 @@ jackson 的注解，
 
 DelegatingWebMvcConfiguration很明显，只是一个代理； 它主要就是注入了一个List<WebMvcConfigurer>，然后放入到WebMvcConfigurerComposite
 
-其实 直接继承 WebMvcConfigurationSupport 也是可以的！
+当然，直接继承 WebMvcConfigurationSupport 也是可以的！
  
 
 # WebMvcAutoConfiguration
 在 spring mvc的时代，我们是需要 @EnableWebMvc， 但是后面又出现了spring boot，这个时候就有了更先进的更完备的做法；
 WebMvcAutoConfiguration 中的 WebMvcAutoConfigurationAdapter 就完成了包括@EnableWebMvc 的各种功能
 
-而 WebMvcAutoConfiguration 又是自动的，所以在spring boot中 @EnableWebMvc 就不需要了！
+而 WebMvcAutoConfiguration 又是自动的，所以在spring boot中 @EnableWebMvc 就不需要了！ 如果我们需要定制化，我们实现 WebMvcConfigurer即可！
+
+
+所以有以下几种使用方式：
+
+- @EnableWebMvc+extends WebMvcConfigurationAdapter，在扩展的类中重写父类的方法即可，这种方式会屏蔽springboot的@EnableAutoConfiguration中的设置
+- extends WebMvcConfigurationSupport，在扩展的类中重写父类的方法即可，这种方式会屏蔽springboot的@EnableAutoConfiguration中的设置
+- extends WebMvcConfigurationAdapter，在扩展的类中重写父类的方法即可，这种方式依旧使用springboot的@EnableAutoConfiguration中的设置
+- extends WebMvcConfigurer，在扩展的类中重写父类的方法即可，这种方式依旧使用springboot的@EnableAutoConfiguration中的设置
+
+
+- 使用 @EnableWebMvc 注解，需要以编程的方式指定视图文件相关配置；
+- 使用 @EnableAutoConfiguration 注解，会读取 application.properties 或 application.yml 文件中的配置。
 
 spring boot中的@SpringBootApplication 就做了相当多的事情！
 
@@ -336,6 +348,8 @@ This class registers the following HandlerMappings:
     HandlerMapping ordered at Integer.MAX_VALUE-1 to serve static resource requests.
     HandlerMapping ordered at Integer.MAX_VALUE to forward requests to the default servlet.
 
+从上可见Controller的RequestMapping 方法优先级比view names映射高！BeanNameUrlHandlerMapping 优先级更低， 静态资源更低，default servlet最低！
+
 Registers these HandlerAdapters:
     
     RequestMappingHandlerAdapter for processing requests with annotated controller methods.
@@ -351,7 +365,8 @@ Registers an AntPathMatcher and a UrlPathHelper to be used by:
     the RequestMappingHandlerMapping,
     the HandlerMapping for ViewControllers
     and the HandlerMapping for serving resources
-    Note that those beans can be configured with a PathMatchConfigurer.
+    
+Note that those beans can be configured with a PathMatchConfigurer.
 
 Both the RequestMappingHandlerAdapter and the ExceptionHandlerExceptionResolver are configured with default instances of the following by default:
     
@@ -359,6 +374,24 @@ Both the RequestMappingHandlerAdapter and the ExceptionHandlerExceptionResolver 
     a DefaultFormattingConversionService
     an org.springframework.validation.beanvalidation.OptionalValidatorFactoryBean if a JSR-303 implementation is available on the classpath
     a range of HttpMessageConverters depending on the third-party libraries available on the classpath.
+
+
+其基本逻辑是
+通过@Bean 创建一个mvc相关的实例，比如设名为Xyz，然后提供 configureXyz 的方法定制化，或提供AddXyz 的方法添加更多的定制化的处理器。
+
+
+# viewControllerHandlerMapping
+直接处理url，返回前端视图； 不进行任何其他逻辑处理。 当然 interceptor 之类的还是需要执行的，是少不了的！
+
+ViewControllerRegistry 是注册什么？ 
+
+BeanNameUrlHandlerMapping 直接把 Controller bean name 和 url 映射起来。
+
+resourceHandlerMapping 又是什么？ 资源处理器映射？ 是不是和 viewControllerHandlerMapping 一样，都是处理静态资源的？ 
+
+—— 不要猜测， 如果英语说明看起来吃力难懂，那么测试，验证一下就知道！
+
+DefaultServletHandlerConfigurer 是？
 
 
 #  静态资源
@@ -369,3 +402,48 @@ Both the RequestMappingHandlerAdapter and the ExceptionHandlerExceptionResolver 
 # HandlerMethod
 mvc中Handler 可以认为是@Controller ， HandlerMethod 可以认为是@Controller中的@RequestMapping 
  
+
+# DispatcherServlet
+DispatcherServlet 无疑是重中之重。
+
+其中 mappedHandler = getHandler(processedRequest); 是获取处理器！
+
+在Spring mvc中，其实Tomcat也是这样，所以访问都需要经过 servlet！ 在Spring mvc中则就是DispatcherServlet！
+
+
+# InternalResourceViewResolver 
+提供了访问 内部的能力： 前缀是 /WEB-INF/， 后缀默认是 jsp；
+a  变成： /WEB-INF/a.jsp
+默认是 jstlView， 当然可以设置其他的 view 
+
+跟FreeMarkerViewResolver类似，可以解析 .ftl 文件；
+
+UrlBasedViewResolver 通用的处理逻辑：
+重定向： 视图名字需要前缀 redirect:
+forward： 视图名字需要前缀 forward:
+
+# AsyncSupportConfigurer
+
+
+# PathResourceResolver
+
+org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest
+
+
+# 视图
+不能直接访问 http://192.168.1.103:8080/result.html 否则就被当成了静态资源，如果静态位置找不到result.html 那么就被重定向到 /error !
+http://192.168.1.103:8080/templates/aa.html 也不行
+那么，应该如何访问 模板资源呢？ 是不是只能经过 controller？ 估计是的！ controller 的@RequestMapping方法，可以返回任何值；如果是返回的视图(或者是能够解析成视图的 字符串)，那么就会调用对应的 viewResolver 进行解析
+比如 thymeleaf 就会调用 ThymeleafViewResolver 进行解析！
+
+ThymeleafViewResolver 的优先级是 优于 静态资源的！
+
+如果 @RequestMapping方法返回了一个视图， ThymeleafViewResolver 解析却找不到对应的视图文件， 是不是会 变成静态资源？  测试并不会如此！ 找不到就报错： 
+TemplateInputException: Error resolving template [fileUpload], template might not exist or might not be accessible by any of the configured Template Resolvers
+
+
+为什么？ 是否可以直接 访问 模板视图资源？ 恐怕不行... 因为 它不是静态的， 一般情况下， 它都是可能存在视图参数的，需要通过 controller进行填充！！
+
+
+# 首页
+WelcomePageHandlerMapping    : Adding welcome page template: index

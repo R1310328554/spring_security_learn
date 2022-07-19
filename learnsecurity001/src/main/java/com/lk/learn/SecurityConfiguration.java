@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.configurers.SecurityCo
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.session.SessionInformationExpiredEvent;
@@ -507,12 +508,28 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
     // springboot thymeleaf security 静态资源 302——thymeleaf的html 到底算不算是静态资源？
+    /*
+        注意观察日志：
+        DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/  ** /  *.html'], []
+        DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/assets/**'], []
+     */
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().mvcMatchers("**.html");
-        // 静态资源方向发行，不起作用！ 依然被拦截，依然302到login page
-        web.ignoring().antMatchers("/assets/**", "/css/**", "/templates/**", "/static/**", "/images/**");
-        web.ignoring().antMatchers("/js/**", "/js/**");
+        // 允许所有的.html结尾的！不能是 *.html、 **.html 需要有 / 前缀
+        // ！它匹配不到任何端点！ 而/*.html是可以的，但只能匹配 一级目录！
+        web.ignoring().antMatchers("/**/*.html");
+
+//        web.ignoring().mvcMatchers("**.html");
+        // 静态资源方向发行，不起作用！ 依然被拦截，依然302到login page！ 因为静态资源的路径默认是不包括 /assets/  /js/， 必须要那边先放行！
+
+        // 下面的 /templates /public/ /static 通常是默认静态资源的查找路径， 如果如下配置，则被当做url 匹配patter，通常是不对的！就是说，通常不应该这样配置！
+        // web.ignoring().antMatchers("/mapper/**", "/public/**", "/templates/**", "/static/**", "/images/**");
+
+        // 访问 http://192.168.1.103:8080/js/my.js 其实是从静态资源路径中寻找，访问 src\main\resources\static\js\my.js， 因为下面/js/放行了， 所以是可以直接访问！
+        // 但是，如果不存在 src\main\resources\static\js\my.js， 那么就会被302到登录页面！
+        // 但是，如果直接访问 http://192.168.1.103:8080/static/js/my.js， 那么就会被302到登录页面！因为不存在！就是说，访问的时候，不需要/static/！有的话，就是画蛇添足！
+        // 通常，应该是把 所有静态资源文件放到/static/目录下！ 那 /public/ 目录呢？ 是那些没有任何限制的静态文件！
+        web.ignoring().antMatchers("/js/**", "/assets/**");
     }
 
     @Bean

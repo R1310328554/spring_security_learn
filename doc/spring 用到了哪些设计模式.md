@@ -403,6 +403,11 @@ query、 delete、 update、 insert 方法其实都是调用 execute 方法
 
 
 组合模式：
+WebMvcConfigurerComposite 
+ViewResolverComposite
+HandlerExceptionResolverComposite
+HandlerMethodArgumentResolverComposite
+HandlerMethodReturnValueHandlerComposite
 
 
 访问者模式
