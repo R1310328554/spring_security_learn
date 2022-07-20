@@ -434,6 +434,15 @@ matchingBeans = {LinkedHashMap@6142}  size = 4
 defaultViewResolver 才会用到 spring.mvc.view.prefix、suffix ！！
 ContentNegotiatingViewResolver 是自动创建的，在WebMvcAutoConfiguration.WebMvcAutoConfigurationAdapter#viewResolver
  
+
+# 内容协商
+参数方式 该方式的优先级低于扩展名方式。
+
+SpringMVC在实现了HTTP内容协商的同时，又进行了自定义的扩展，它支持4种协商方式。
+HTTP的Accept头;
+扩展名;
+请求参数;
+固定类型(producers).
  
 在Spring mvc中，其实Tomcat也是这样，所以访问都需要经过 servlet！ 在Spring mvc中则就是DispatcherServlet！
 
@@ -462,7 +471,7 @@ forward： 视图名字需要前缀 forward:
 org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest
 
 
-# 视图
+### 视图
 不能直接访问 http://192.168.1.103:8080/result.html 否则就被当成了静态资源，如果静态位置找不到result.html 那么就被重定向到 /error !
 http://192.168.1.103:8080/templates/aa.html 也不行
 那么，应该如何访问 模板资源呢？ 是不是只能经过 controller？ 估计是的！ controller 的@RequestMapping方法，可以返回任何值；如果是返回的视图(或者是能够解析成视图的 字符串)，那么就会调用对应的 viewResolver 进行解析

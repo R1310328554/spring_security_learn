@@ -48,7 +48,7 @@ public class SpringmvcDemoApplication implements CommandLineRunner, ServletConte
         System.out.println(path1);
 
         // 获得工程目录webroot下文件的流
-        InputStream in = sc.getResourceAsStream("classes/application.properties");
+        InputStream in = sc.getResourceAsStream("application.properties");
         Properties prop = new Properties();
         try
         {
