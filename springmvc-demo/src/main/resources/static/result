@@ -6,11 +6,7 @@
 </head>
 <body>
 
-<h1>aa</h1>
-
-templates 文件！
-<div th:text="${name}"></div>
-<div th:text="${msg}"></div>
+result 1
 
 </body>
 </html>

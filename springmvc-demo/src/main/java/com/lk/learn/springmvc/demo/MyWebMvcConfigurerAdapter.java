@@ -36,8 +36,8 @@ public class MyWebMvcConfigurerAdapter implements WebMvcConfigurer {
         构建的过程是：
         ContentNegotiationManagerFactoryBean.build
      */
-    @Override
-    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+//    @Override
+    public void configureContentNegotiation2(ContentNegotiationConfigurer configurer) {
 //        List<ContentNegotiationStrategy> contentNegotiationStrategies = new ArrayList<>();// 不能添加一个空的 list ！框架不允许！
 //        configurer.strategies(contentNegotiationStrategies);
         configurer.favorPathExtension(true); // 这里的配置和application.properties的配置会覆盖/叠加还是替换？
@@ -78,7 +78,7 @@ public class MyWebMvcConfigurerAdapter implements WebMvcConfigurer {
         //	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005) ~[spring-webmvc-5.1.5.RELEASE.jar:5.1.5.RELEASE]
         //	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:897) ~[spring-webmvc-5.1.5.RELEASE.jar:5.1.5.RELEASE]
 
-//        configurer.enable("asdf");
+        configurer.enable("asdf");
     }
 
     @Override

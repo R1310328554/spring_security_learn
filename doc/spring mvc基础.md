@@ -392,7 +392,15 @@ resourceHandlerMapping 又是什么？ 资源处理器映射？ 是不是和 vie
 
 —— 不要猜测， 如果英语说明看起来吃力难懂，那么测试，验证一下就知道！
 
-DefaultServletHandlerConfigurer 是？
+
+# DefaultServletHandlerConfigurer 是？ https://www.cnblogs.com/emanlee/p/15754589.html https://www.cnblogs.com/develon/p/11524872.html
+每次请求过来，先经过 DefaultServletHttpRequestHandler 判断是否是静态文件，如果是静态文件，则进行处理，不是则放行交由 DispatcherServlet 控制器处理。
+
+DefaultServlet 是大多数 Web 应用的默认资源服务 Servlet，用于提供 HTML 页面和图像等静态资源。
+
+DefaultServletHttpRequestHandler 尝试在启动时自动检测容器的默认 Servlet，例如 Tomcat，Jetty，Wildfly 和 Resin。 如果默认 Servlet 是使用其他名称自定义配置的，则必须明确提供默认 Servlet 的名称。
+
+如果我们重写DefaultServlet's路由（/），则可以使用 DefaultServletHandlerConfigurer's enable() 方法启用它，以便我们仍然可以使用容器的默认 Servlet 提供静态资源。
 
 
 #  静态资源
@@ -409,11 +417,34 @@ DispatcherServlet 无疑是重中之重。
 
 其中 mappedHandler = getHandler(processedRequest); 是获取处理器！
 
+
+matchingBeans = {LinkedHashMap@6142}  size = 4
+ "mvcViewResolver" -> {ViewResolverComposite@6159} // 其实是空的，没有用！
+ "defaultViewResolver" -> {InternalResourceViewResolver@5667} // 默认的！默认就是使用jsp作为视图 
+ "viewResolver" -> {ContentNegotiatingViewResolver@6160}    // 启动了内容协商之后！
+ "thymeleafViewResolver" -> {ThymeleafViewResolver@6161} // 
+ 
+ 注意，排序之后是：
+ ContentNegotiatingViewResolver
+ ThymeleafViewResolver
+ ViewResolverComposite
+ InternalResourceViewResolver
+ 
+ 
+defaultViewResolver 才会用到 spring.mvc.view.prefix、suffix ！！
+ContentNegotiatingViewResolver 是自动创建的，在WebMvcAutoConfiguration.WebMvcAutoConfigurationAdapter#viewResolver
+ 
+ 
 在Spring mvc中，其实Tomcat也是这样，所以访问都需要经过 servlet！ 在Spring mvc中则就是DispatcherServlet！
 
 
+# View
+首先搞清楚什么是view？ 是视图，可以简单这么说，但是没说到重点； 重点是 有数据、有UI、界面；
+通常是，ViewResolver 把数据填充到界面中，通过浏览器展示给用户！
+ 
 # InternalResourceViewResolver 
-提供了访问 内部的能力： 前缀是 /WEB-INF/， 后缀默认是 jsp；
+提供了访问 内部的能力： 内部的视图解析器是什么？ 对于Tomcat来说， 就是jsp，具体参见 JspServlet ！
+ 前缀是 /WEB-INF/， 后缀默认是 jsp；
 a  变成： /WEB-INF/a.jsp
 默认是 jstlView， 当然可以设置其他的 view 
 
@@ -441,6 +472,11 @@ ThymeleafViewResolver 的优先级是 优于 静态资源的！
 
 如果 @RequestMapping方法返回了一个视图， ThymeleafViewResolver 解析却找不到对应的视图文件， 是不是会 变成静态资源？  测试并不会如此！ 找不到就报错： 
 TemplateInputException: Error resolving template [fileUpload], template might not exist or might not be accessible by any of the configured Template Resolvers
+报这个错之后，就返回默认的Tomcat 404页面！ —— 这种情况应该是尽量避免的， 对用户非常不友好！
+
+
+# Whitelabel Error Page
+把thymeleaf的依赖去掉之后，没有出现Tomcat 404页面，反而是  Whitelabel Error Page - 404, why 
 
 
 为什么？ 是否可以直接 访问 模板视图资源？ 恐怕不行... 因为 它不是静态的， 一般情况下， 它都是可能存在视图参数的，需要通过 controller进行填充！！

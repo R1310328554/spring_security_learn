@@ -38,7 +38,7 @@ import java.util.Map;
     // 原文链接：https://blog.csdn.net/qq_36829919/article/details/101210250
 
  */
-//@ControllerAdvice // 全局的！
+@ControllerAdvice // 全局的！
 // @RestControllerAdvice // 主要针对 异常处理？
 
 public class MyControllerAdvice {

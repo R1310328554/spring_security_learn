@@ -55,5 +55,6 @@ public class demo1 extends HttpServlet
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException
 	{
+		System.out.println("MyServlet demo1.doGet   " + "req = " + req);
 	}
 } // https://blog.csdn.net/qq_36260974/article/details/90283466

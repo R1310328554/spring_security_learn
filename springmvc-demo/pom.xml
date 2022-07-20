@@ -84,6 +84,28 @@
             <version>2.9.6</version>
         </dependency>
 
+        <!--用于解析jsp页面
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-jsp-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+        -->
+
     </dependencies>
 
     <build>
@@ -91,6 +113,8 @@
     SpringBoot项目默认推荐使用的前端引擎是thymeleaf
     现在我们要使用SpringBoot集成jsp，手动指定jsp最后编译的路径
     同时SpringBoot集成jsp编译jsp的路径是规定好的：META-INF/resources
+
+    否则Tomcat会去类似 C:\Users\admin\AppData\Local\Temp\tomcat-docbase.2688677235408190296.8080 目录查找 jsp ！
 -->
         <resources>
             <resource>

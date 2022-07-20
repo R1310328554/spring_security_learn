@@ -112,6 +112,10 @@ public class ModelAttributeController {
         return userForm;
     }
 
+    /*
+        我访问 http://192.168.1.103:8080/aa.html 、 http://192.168.1.103:8080/aa.dasfqwe
+        为何会到这里来？ 难道是ContentNegotiation？ 任意后缀 都如此！
+     */
     @RequestMapping(value = "/aa")
     public String aa(Model model) {
         System.out.println("ModelAttributeController.aa");
