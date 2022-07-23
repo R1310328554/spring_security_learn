@@ -1,8 +1,10 @@
 package com.lk.learn.springmvc.demo.testJ2ee;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import java.io.IOException;
 
+//@WebFilter(filterName="firstFilter", urlPatterns="/*") filterName 通常没有什么用，而urlPatterns很重要，是不能少的！
 public class filter_one implements Filter {
 
 

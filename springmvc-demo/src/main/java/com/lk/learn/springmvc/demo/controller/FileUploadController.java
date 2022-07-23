@@ -1,10 +1,13 @@
 package com.lk.learn.springmvc.demo.controller;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import com.lk.learn.springmvc.demo.domain.FileDomain;
 import com.lk.learn.springmvc.demo.domain.MultiFileDomain;
@@ -14,7 +17,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class FileUploadController {
@@ -68,6 +73,33 @@ public class FileUploadController {
         return "showFile";
     }
 
+    /*
+     * 这种方式也可以获取上传的文件， 更加直接的方式！
+     */
+    @RequestMapping("/file-upload")
+    public ModelAndView upload(@RequestParam(value = "file", required = false) MultipartFile file,
+            HttpServletRequest request, HttpSession session) {
+        // 文件不为空
+        if(!file.isEmpty()) {
+            // 文件存放路径
+            String path = request.getServletContext().getRealPath("/");
+            // 文件名称
+            String name = String.valueOf(new Date().getTime()+"_"+file.getOriginalFilename());
+            File destFile = new File(path,name);
+            // 转存文件
+            try {
+                file.transferTo(destFile);
+            } catch (IllegalStateException | IOException e) {
+                e.printStackTrace();
+            }
+            // 访问的url
+            String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+            + request.getContextPath() + "/" + name;
+        }
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("other/home");
+        return mv;
+    }
 
     /**
      * 多文件上传

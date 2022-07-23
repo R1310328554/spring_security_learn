@@ -5,7 +5,11 @@ import javax.servlet.annotation.WebFilter;
 import java.io.IOException;
 
 
-// 它的顺序是在 spring 之前， 还是之后？？
+/*
+ Filter 程序可以拦截 Jsp, Servlet, 静态图片文件和静态 html 文件
+
+ 它的顺序是在 spring 之前， 还是之后？ 前
+ */
 @WebFilter("/te/*") // 匹配 /te/.abd
 public class MyFilter implements Filter {
 
@@ -65,7 +69,14 @@ public class MyFilter implements Filter {
         System.out.println("servletRequest = [" + servletRequest + "], servletResponse = [" + servletResponse + "], filterChain = [" + filterChain + "]");
 
         servletRequest.getRequestDispatcher("a");
-        filterChain.doFilter(servletRequest, servletResponse);
+
+        System.out.println("second filter 1");
+        System.out.println("before:" + servletResponse);
+        filterChain.doFilter(servletRequest, servletResponse); // 如果没有这一行， 那么filterChain到此提前中断，往回走，不会往下继续执行servlet！ SpringMVC的一切都不会执行！
+        System.out.println("after:" + servletResponse); // 如果你想对请求的response做一下过滤处理，那么一定要在chain.doFilter(res, rep)之后写你的逻辑。
+        System.out.println("second filter 2");
+        // https://blog.csdn.net/u014627099/article/details/84565603
 
     }
+
 }

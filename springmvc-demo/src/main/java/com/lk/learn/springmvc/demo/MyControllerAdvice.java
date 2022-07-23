@@ -79,8 +79,8 @@ public class MyControllerAdvice {
     public void globalInitBinder(WebDataBinder binder) {
         System.out.println("MyControllerAdvice.globalInitBinder " + binder);
 
-        PropertyEditor ldC = new PropertyEditorSupport();
-        binder.registerCustomEditor(LocalDate.class, ldC);
+//        PropertyEditor ldC = new PropertyEditorSupport();
+//        binder.registerCustomEditor(LocalDate.class, ldC);
 //        binder.convertIfNecessary()
         // binder.addValidators();
 //        binder.setValidator();
@@ -88,7 +88,10 @@ public class MyControllerAdvice {
 //        binder.setConversionService();
 //        binder.validate();
 
-        binder.addCustomFormatter(new DateFormatter("yyyy-MM-dd"));
+        // 这个会覆盖 WebConversionService#registerJavaDate创建的 DateFormatter， 因为custom定制化的优先！
+//        binder.addCustomFormatter(new DateFormatter("yyyy-MM-dd"));
+        binder.addCustomFormatter(new MyDateFormatter("yyyy-MM-dd"));
+//        binder.addValidators();
     }
 
     /**

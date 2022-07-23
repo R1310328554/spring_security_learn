@@ -250,6 +250,7 @@ SqlSessionFactoryBean 返回的不是 SqlSessionFactoryBean 的实例，而是�
 # 门面模式：
 org.apache.catalina.core.ApplicationContextFacade
 org.apache.catalina.connector.RequestFacade
+org.apache.catalina.connector.ResponseFacade
 com.alibaba.druid.stat.DruidStatManagerFacade
 
 

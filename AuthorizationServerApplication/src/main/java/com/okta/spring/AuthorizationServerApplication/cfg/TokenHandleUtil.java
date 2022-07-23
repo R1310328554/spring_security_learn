@@ -61,6 +61,7 @@ public class TokenHandleUtil {
 	public String getAccessToken(String authorization){
 		String accessToken = null;
 		if(StringUtils.isEmpty(authorization)){
+			//这里通过 RequestContextHolder 静态方式获取request，是一个很好做法！！
 			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 			authorization = request.getHeader("Authorization");
 		}

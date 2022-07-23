@@ -413,7 +413,7 @@ mvc中Handler 可以认为是@Controller ， HandlerMethod 可以认为是@Contr
  
 
 # DispatcherServlet
-DispatcherServlet 无疑是重中之重。
+DispatcherServlet 无疑是重中之重。 DispatcherServlet也是一个servlet，那么它的访问路径是？ 是/, 这个是默认值，也就是所有的！
 
 其中 mappedHandler = getHandler(processedRequest); 是获取处理器！
 

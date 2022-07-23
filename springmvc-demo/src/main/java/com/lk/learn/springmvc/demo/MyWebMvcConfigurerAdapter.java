@@ -214,8 +214,14 @@ public class MyWebMvcConfigurerAdapter implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-
-        registry.addMapping("/cors").allowedMethods("get");
+        registry.addMapping("/api/**")
+                .allowedOrigins("http://domain2.com")
+                .allowedMethods("PUT", "DELETE")
+                .allowedHeaders("header1", "header2", "header3")
+                .exposedHeaders("header1", "header2")
+                .allowCredentials(false).maxAge(3600);
+//        原文链接：https://blog.csdn.net/MobiusStrip/article/details/84849418
+//        registry.addMapping("/cors").allowedMethods("get");
     }
 
     /*
