@@ -45,21 +45,21 @@ public class MyDateFormatter implements Formatter<Date> {
 
         static {
             Map<String, String> formats = new HashMap<>();
-            formats.put("0", "yyyy-MM-dd");
-            formats.put("1", "yyyy.MM.dd");
+            formats.put("0", "yyyy-MM");
+//            formats.put("1", "yyyy.MM.dd");
             formats.put("2", "yyyy/MM/dd");
             formats.put("3", "HH:mm:ss.SSSXXX");
             // formats.put("3", "HH:mm:ss.SSSXXX");
             formats.put("4", "yyyy-MM-dd HH:mm:ss.SSSXXX");
             formats.put("5", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-            formats.put("6", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-            formats.put("7", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+            formats.put("6", "yyyy-MM-dd'T'HH:mm:ss");
+            formats.put("7", "yyyy-MM-dd'T'HH:mm:ss.SSS");
             ISO_PATTERNS = Collections.unmodifiableMap(formats);
         }
 
 
         @Nullable
-        private String pattern;
+        private String pattern = "yyyy-MM-dd";
 
         private int style = DateFormat.DEFAULT;
 

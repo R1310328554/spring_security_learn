@@ -20,10 +20,11 @@ public class MyFilter222 implements Filter {
         System.out.println("Component filterConfig = [" + filterConfig + "]");
     }
 
+    @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-
         System.out.println("MyFilter222.doFilter");
-        System.out.println("servletRequest = [" + servletRequest + "], servletResponse = [" + servletResponse + "], filterChain = [" + filterChain + "]");
+        filterChain.doFilter(servletRequest, servletResponse);
+        // System.out.println("servletRequest = [" + servletRequest + "], servletResponse = [" + servletResponse + "], filterChain = [" + filterChain + "]");
     }
 
 }

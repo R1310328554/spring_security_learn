@@ -73,9 +73,9 @@ public class MyControllerAdvice {
     }
 
     /**
-     * 应用到所有@RequestMapping注解方法，在其执行之前初始化数据绑定器
+     * 应用到所有@RequestMapping注解方法，在其执行之前初始化数据绑定器_ 每次http请求requestMapping 都会执行这个方法
      */
-    @InitBinder
+//    @InitBinder
     public void globalInitBinder(WebDataBinder binder) {
         System.out.println("MyControllerAdvice.globalInitBinder " + binder);
 

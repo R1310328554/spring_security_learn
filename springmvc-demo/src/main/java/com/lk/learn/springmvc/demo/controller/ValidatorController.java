@@ -2,21 +2,23 @@ package com.lk.learn.springmvc.demo.controller;
 
 import com.lk.learn.springmvc.demo.domain.User;
 import com.lk.learn.springmvc.demo.domain.UserForm;
-import com.lk.learn.springmvc.demo.domain.UserFormValidator;
 import com.lk.learn.springmvc.demo.domain.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -115,6 +117,7 @@ public class ValidatorController {
 	 */
 	@RequestMapping("/validate")
 	public String validate(@Valid User user, BindingResult result) {
+		System.out.println("ValidatorController.validate	" + "	user = [" + user + "], result = [" + result + "]");
 		// 如果有异常信息
 		if (result.hasErrors()) {
 			// 获取异常信息对象
@@ -131,5 +134,46 @@ public class ValidatorController {
 	public String add() {
 		return "addUser";
 	}
+
+	@RequestMapping(value = "/getUser", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public User get() {
+		User user = new User();
+		user.setId(123);
+		user.setName("lk");
+		user.setBornDate(new Date());
+		user.setBornDate2(new Date().getTime());
+		user.setBornDate3(LocalDateTime.now());
+		user.setBornDate4(new Date());
+		user.setHiredate(new Date());
+		user.setEmail("asdf@qq.com");
+		user.setBalance(123456789.012345);
+		user.setBalance2("123456789.012345");
+		user.setBalance3(123456789.012345);
+		user.setNum4(123456789.012345);
+		user.setMoney(3210123.456789);
+		user.setDiscount(3210123.456789);
+		user.setTotal(210123789);
+		return user;
+	}
+
+	/*
+		http://192.168.1.103:8080/valid/date1?date=2011-01-11
+	 */
+	@GetMapping("/date1")
+	public String datest(@DateTimeFormat(iso= DateTimeFormat.ISO.DATE) Date date){
+		System.out.println(date);
+		return "index";
+	}
+
+	/*
+		http://192.168.1.103:8080/valid/date2?date=2011/01/11
+	 */
+	@GetMapping("/date2")
+	public String datest2(@DateTimeFormat(pattern = "yyyy/MM/dd") Date date){
+		System.out.println(date);
+		return "index";
+	}
+
 
 }

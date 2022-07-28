@@ -85,6 +85,9 @@ public class MyWebMvcConfigurerAdapter implements WebMvcConfigurer {
     public void addFormatters(FormatterRegistry registry) {
         System.out.println("MyWebMvcConfigurerAdapter.addFormatters");
 
+        // 如果存在自定义的 DateFormatter， 那么字段上的@DateTimeFormat(pattern = "yyyy.MM.dd")被忽略，不执行！ 因为只选取一个，一个不行就异常！
+        //
+        registry.addFormatter(new MyDateFormatter());// 这种方式添加的格式化器，会进入 ConversionService converters， 而不是 customEditor
     }
 
     @Override
