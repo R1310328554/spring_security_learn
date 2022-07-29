@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
+import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.DispatcherServlet;
 
@@ -14,6 +15,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
 
 @SpringBootApplication
@@ -64,7 +66,14 @@ public class SpringmvcDemoApplication implements CommandLineRunner, ServletConte
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("SpringmvcDemoApplication.run");
+        System.out.println("SpringmvcDemoApplication.run  测试 SpringFactoriesLoader .. ");
+
+        /*
+            SpringFactoriesLoader 测试
+         */
+        List<String> strings = SpringFactoriesLoader.loadFactoryNames(JaksonConverter.class, this.getClass().getClassLoader());
+        System.out.println("strings = " + strings);
+
     }
 
     @Override
