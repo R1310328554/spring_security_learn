@@ -1,0 +1,20 @@
+<body>
+<input type="text" id="text">
+<input type="button" id="s" value="按钮" onclick="test()">
+<div id='div'></div><br/>
+<script> alert(123) </script>
+
+<script>
+    function test(){
+        var str = document.getElementById('text').value;
+        document.getElementById("div").innerHTML = "<img src='"+str+"'/>"; // 攻击： '  onerror=alert(/我是xss/)  变成了 <img src="" ab="" onerror="alert(/我是xss/)" '=""> 也就是自动添加了=
+        // document.getElementById("div").innerHTML = "<img src="+str+" />"; // 攻击： abc onerror=alert(/我是xss/)
+        // onclick
+    }
+    // 注意src的值gggg后面附带空格的
+
+    // 弹框而已， 就算是攻击吗？ 不要觉得一个小弹窗不会造成什么危害，能够执行alert()函数就意味着通过这种方式可以执行任务JS代码。即攻击者通过javaScript几乎可以做任何事情：窃取用户的cookie和其他敏感数据，重定向到钓鱼网站，发送其他请求，执行注入转账、发布广告信息、在社交网站关注某个用户等。
+
+
+</script>
+</body>

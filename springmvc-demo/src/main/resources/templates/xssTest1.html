@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>DOM Based XSS Demo</title>
+    <script>
+        function xsstest()
+        {
+            var str = document.getElementById("input").value;
+            document.getElementById("output").innerHTML = "<img src='"+str+"'></img>";
+        }
+    </script>
+</head>
+<body>
+
+<!--
+作者：Tz
+链接：https://juejin.cn/post/6912030758404259854
+来源：稀土掘金
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+<script>alert("hack")</script>
+
+-->
+
+
+<form action="/xss/xssSubmit" method="post">
+</form>
+
+
+<div id="asdf">
+访问 http://192.168.1.103:8080/xss/xssTest1?param=< script>alert("hey!")< / script>， 后端返回的数据：   <span th:utext="${param2}"></span>
+<!--    <span th:text="${param2}"></span>  不能使用param， 会变成org.thymeleaf.context.WebEngineContext$RequestParametersMap@1234 这样..  why   -->
+param 是用户填写的，不过滤则可能引起xss 攻击！
+
+<br/>
+<br/>
+th:utext	文本替换，不转义特殊字符
+<br/>
+th:text	文本替换，转义特殊字符 ，  具体如何转义的？
+
+</div>
+
+<div id="output"></div>
+
+    <br/>
+    <input type="text" id="input" size=50 value="" />
+    <br/>
+    <input type="button" value="submit" onclick="xsstest()" />
+    <br/>
+    <input type="text" name="content" value="这里是用户填写的数据">
+    <br/>
+    <br/>
+
+    <input type="button" value="submit2"  />
+
+    <br/>
+
+
+</body>
+</html>

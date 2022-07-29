@@ -1,0 +1,143 @@
+<body>
+<input type="text" id="text">
+<input type="button" id="s" value="添加a元素到div" onclick="test()">
+<input type="button" id="s2" value="添加内容元素到div" onclick="test2()">
+<div id='div'>
+
+</div>
+
+<!--
+<script> alert(666) </script>
+
+-->
+
+<!--<a href="ggg" onclick="alert(/xss/)" \\'>示范2</a>  不能使用这个， 否则Tomcat启动不了，但是不影响直接访问html  -->
+<script>
+    function test(){
+        var str = document.getElementById('text').value;
+        document.getElementById("div").innerHTML = "<a href='"+str+"' >testLink</a>"; // 填写 '  onclick=alert(/xss/) // 就可以发起xss， 后面的// 其实不用也可以
+        // 不一定要onclick， 其他的，比如 onfocus 都可以，只要触发xss 攻击动作即可...
+    }
+
+
+    /*
+    测试发现，如下test2()函数， 直接使用 添加script 的方式， 不会引发弹框， 可能是因为浏览器进行了限制？
+    <script> alert(666) </ script>
+    */
+    function test2(){
+        var str = document.getElementById('text').value;
+        document.getElementById("div").innerHTML = str;
+        // document.getElementById("div").innerHTML = "'"+str+"'";
+    }
+
+
+    function test22(){
+
+        var str = document.getElementById('text').value;
+        str = escapeHtml(str); // XSS 防御
+        // ...
+
+    }
+
+    /*
+     反射型XSS效果与存储型XSS和DOM型XSS唯一的差别是反射型XSS直接把GET中的参数显示在网页上，没有经过数据库，而存储型XSS是先存储到服务器上，再回显到网页的。则DOM型XSS是单纯的前端漏洞
+        (2016.3.16修改,domxss取决于输出位置,并不取决于输出环境,因此domxss既有可能是反射型的,也有可能是存储型的)
+    */
+
+    /*
+        chrome浏览器自带防御,可拦截反射型XSS（HTML内容和属性），js和富文本的无法拦截，所以我们必须得自己做一些防御手段。
+
+        反射型XSS的url处理，采用插值或过滤
+        a 推荐使用插值； b encodeURI
+    */
+
+    /*  XSS防御措施
+        1、HTML节点内容的防御
+     */
+    function escapeHtml (str) {
+        str = str.replace(/</g,'&lt;');
+        str = str.replace(/>/g,'&gt;');
+        return str;
+    }
+
+    /*
+        2、HTML属性的防御： 对空格，单引号，双引号进行转义
+     */
+    function escapeHtmlProperty(str){
+        if(!str) return '';
+        str = str.replace(/"/g,'&quto;');
+        str = str.replace(/'/g,'&#39;');
+        str = str.replace(/ /g,'&#32;');
+        return str;
+    }
+    /*
+        3、JavaScript的防御：对引号进行转义
+     */
+    var escapeForJS = function(str){
+        if(!str) return '';
+        str = str.replace(/\\/g,'\\\\');
+        str = str.replace(/"/g,'\\"');
+        return str;
+    }
+
+    /*
+        4、富文本的防御：富文本的情况非常的复杂，js可以藏在标签里，超链接url里，何种属性里。
+        富文本的情况非常的复杂，js可以藏在标签里，超链接url里，何种属性里。
+
+        所以我们不能过用上面富文本的方法做简单的转义。因为情况实在太多了。
+
+        现在我们换个思路，
+        提供两种过滤的办法：比较复杂，需要用白名单过滤，不在白名单中的都转义
+
+        1）黑名单
+        我们可以把<script/> onerror这种危险标签或者属性纳入黑名单，过滤掉它。但是我们想，这种方式你要考虑很多情况，你也有可能漏掉一些情况等。
+
+        2）白名单
+        这种方式只允许部分标签和属性。不在这个白名单中的，一律过滤掉它。但是这种方式编码有点麻烦，我们需要去解析html树状结构，然后进行过滤，把过滤后安全的html在输出。
+        这里提供一个包，帮助我们去解析html树状结构，它使用起来和jquery非常的类似。
+
+        npm install cheerio --save
+     */
+    function xssFilter(html) {
+        if(!html) return '';
+        var cheerio = require('cheerio');
+        var $ = cheerio.load(html);
+        //白名单
+        var whiteList = {
+            'html' : [''],
+            'body' : [''],
+            'head' : [''],
+            'div' : ['class'],
+            'img' : ['src'],
+            'a' : ['href'],
+            'font':['size','color']
+        };
+
+        $('*').each(function(index,elem){
+            if(!whiteList[elem.name]) {
+                $(elem).remove();
+                return;
+            }
+            for(var attr in elem.attribs) {
+                if(whiteList[elem.name].indexOf(attr) === -1) {
+                    $(elem).attr(attr,null);
+                }
+            }
+
+        });
+
+        return $.html();
+    }
+
+    /*
+        5、CSP(Content Security Policy)
+        内容安全策略（Content Security Policy，简称CSP）是一种以可信白名单作机制，来限制网站中是否可以包含某来源内容。默认配置下不允许执行内联代码（
+     */
+
+
+
+
+</script>
+</body>
+
+<!--参考 https://www.cnblogs.com/jing-tian/p/12811484.html -->
