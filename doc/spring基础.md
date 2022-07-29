@@ -33,3 +33,7 @@ TypeConverterDelegate.convertIfNecessary(java.lang.String, java.lang.Object, jav
 editor = this.findDefaultEditor(requiredType);
 
 
+# 自定义的 Formatter Converter 是在哪里被装配的？
+WebMvcAutoConfiguration.WebMvcAutoConfigurationAdapter.addFormatters
+
+getBeansOfType 是很有用的！

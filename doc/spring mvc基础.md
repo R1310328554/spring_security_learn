@@ -251,6 +251,12 @@ DisposableBean接口，实现了BeanPostProcessor接口的bean，在该bean死�
 # Converter vs Formatter
 两者其实非常的类似。
 
+Converter主要是做Object与Object之间的类型转换，Formatter则是要完成任意Object与String之间的类型转换。前者适合于任何一层，而后者则主要用于web层
+
+Converter只完成了数据类型的转换，却不负责输入输出数据的格式化工作，日期时间、货币等虽都以字符串形式存在，却有不同的格式。
+
+Formatter 常用于格式化输出，就是把一个对象，以特定的格式输出为String
+
 Converter 主要是两个方法：
     
     @FunctionalInterface
