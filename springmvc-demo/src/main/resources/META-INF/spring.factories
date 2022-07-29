@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.lk.learn.springmvc.demo.controller.XssController
+com.lk.learn.springmvc.demo.JaksonConverter = com.lk.learn.springboot.demo.abc
