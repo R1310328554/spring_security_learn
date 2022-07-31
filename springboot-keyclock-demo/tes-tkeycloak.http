@@ -1,0 +1,23 @@
+POST /auth/realms/demo/protocol/openid-connect/token HTTP/1.1
+Host: 112.74.110.95:8080
+Content-Type: application/x-www-form-urlencoded
+
+client_id=vue-demo&username=admin&password=1&grant_type=password
+
+### vue-demo 是public 才可以；如果是 bearer-only，那么 Client Authenticator 只能通过 Client Id and Secret,  而grant_type=password是不行的！
+POST /auth/realms/demo/protocol/openid-connect/token HTTP/1.1
+Host: 112.74.110.95:8080
+Content-Type: application/x-www-form-urlencoded
+
+client_id=spring-boot-demo&client_secret=e3bc77b7-dd20-40a2-81e4-9090cc874759&username=admin&password=admin&grant_type=client_credentials
+# 行不通， 返回：{
+#  "error": "invalid_client",
+#  "error_description": "Bearer-only not allowed"
+#}
+
+### 刷新Token只需要把refresh_token带上，把grant_type改为refresh_token就可以刷新Token对了，下面是请求刷新的报文：
+POST /auth/realms/felord.cn/protocol/openid-connect/token HTTP/1.1
+Host: localhost:8011
+Content-Type: application/x-www-form-urlencoded
+
+client_id=springboot-client&grant_type=refresh_token&refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJlYWE2MThhMC05Y2UzLTQxZWMtOTZjYy04MGQ5ODVkZjJjMTIifQ.eyJleHAiOjE2MjU3NjI4ODYsImlhdCI6MTYyNTc2MTA4NiwianRpIjoiZjc2MjVmZmEtZWU3YS00MjZmLWIwYmQtOTM3MmZiM2Q4NDA5IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDExL2F1dGgvcmVhbG1zL2ZlbG9yZC5jbiIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAxMS9hdXRoL3JlYWxtcy9mZWxvcmQuY24iLCJzdWIiOiI0YzFmNWRiNS04MjU0LTQ4ZDMtYTRkYS0wY2FhZTMyOTk0OTAiLCJ0eXAiOiJSZWZyZXNoIiwiYXpwIjoic3ByaW5nYm9vdC1jbGllbnQiLCJzZXNzaW9uX3N0YXRlIjoiZDU2NmU0ODMtYzc5MS00OTliLTg2M2ItODczY2YyNjMwYWFmIiwic2NvcGUiOiJwcm9maWxlIGVtYWlsIn0.P4vWwyfGubSt182P-vcyMdKvJfvwKYr1nUlOYBWzQks

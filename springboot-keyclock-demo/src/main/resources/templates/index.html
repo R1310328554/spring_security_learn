@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Index </title>
+</head>
+<body>
+
+<h1>Index </h1>
+
+<div th:text="${userForm}"></div>
+
+
+<form action="/keycloak/test" method="post">
+    用户id：<input type="text" name="id" />
+    <br>
+    用户名：<input type="text" name="name" />
+    <br>
+    邮箱：<input type="text" name="email" />
+    <br>
+    <input type="submit" value="提交" />
+</form>
+
+</body>
+</html>

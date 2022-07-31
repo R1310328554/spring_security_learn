@@ -1,0 +1,32 @@
+server:
+  port: 8082
+keycloak:
+  # 声明客户端所在的realm
+  realm: demo
+  # keycloak授权服务器的地址
+  auth-server-url: http://112.74.110.95:8080/auth
+  # 这里的resource 其实是 keycloak的client
+  resource: spring-boot-demo
+  ssl-required: external
+  credentials:
+    secret: e3bc77b7-dd20-40a2-81e4-9090cc874759
+  bearer-only: true
+  #
+  use-resource-role-mappings: false
+  cors: true
+
+  ## 这里就是配置客户端的安全约束，就是那些角色映射那些资源
+  security-constraints:
+    # # 角色和资源的映射关系。下面是多对多的配置方式
+    - authRoles:
+        - ROLE_CUSTOMER
+      securityCollections:
+        - name: customer
+          patterns:
+            - /customer
+    - authRoles:
+        - ROLE_ADMIN
+      securityCollections:
+        - name: admin
+          patterns:
+            - /admin
