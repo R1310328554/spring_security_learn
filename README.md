@@ -1,14 +1,18 @@
-spring_security、 oauth2 学习demo
+spring_security、oauth2、keyclock 学习demo， 也包括Spring Mvc、Spring Boot 基础练习
 
 其中
 - AuthorizationServerApplication 是oauth2服务端，包括 认证服务器、资源服务器
 - SpringBootOAuthClient 是oauth2客户端
 - oauth2-ResourceServer 是oauth2 资源服务器端
 - springmvc-demo 是Spring Mvc 学习demo
+- springboot-demo 是Spring Boot 学习demo
 - learnsecurity001 是Spring Security学习demo
+- springboot-keyclock-demo 是keyclock学习demo，客户端在 github.com/R1310328554/vue3-keycloak
 
 # 版本
-spring-boot-starter-parent：2.1.3.RELEASE
+1. spring-boot-starter-parent：2.1.3.RELEASE
+1. oauth2：2.3.3.RELEASE
+1. keyclock： 14.0.0
 
 
 # 已经完成
@@ -17,13 +21,14 @@ spring-boot-starter-parent：2.1.3.RELEASE
 - 支持token存jdbc、redis
 - 支持jwt格式token
 - token过期自动续签
-- 认证服务器资源保护
+- 认证服务器资源保护、RBAC
 - 资源服务器分离部署
 - 极其丰富的测试用例
 - 极其丰富的注释说明
 - 关键类、流程源码说明
 - 4中认证方式的测试通过
 - 各种问题解释说明
+- OpenID、OIDC、Keycloak的支持
 
 # 如何运行？
 配置好github、weibo client（不配置的话，使用我的也可以）然后直接启动AuthorizationServerApplication、SpringBootOAuthClientApplication 即可
@@ -55,6 +60,4 @@ spring-boot-starter-parent：2.1.3.RELEASE
 # TODO
 - 真正的前后端分离
 - 支持微信、抖音、Facebook、Twitter登录
-- OpenID、OIDC、Keycloak的支持
 - 代码不够清晰，无用代码、注释比较多
-- RBAC 
