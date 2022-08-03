@@ -9,7 +9,7 @@ keycloak:
   resource: spring-boot-demo
   ssl-required: external
   credentials:
-    secret: e3bc77b7-dd20-40a2-81e4-9090cc874759
+    secret: 396ffeaa-0c06-4aab-aba9-4706714d30bd
   bearer-only: true
   #
   use-resource-role-mappings: false
@@ -24,9 +24,12 @@ keycloak:
         - name: customer
           patterns:
             - /customer
+            - /test
+            - /test/*
     - authRoles:
         - ROLE_ADMIN
       securityCollections:
         - name: admin
           patterns:
             - /admin
+            - /test2
