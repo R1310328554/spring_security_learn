@@ -106,6 +106,8 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
         为什么需要转换呢？什么场景需要accessTokenConverter？
      */
+    // 这里可以放开， 但是为了支持 keycloak，需要注释掉，否则： Could not decode access token response；
+    // 因为tokenEnhancer导致decode异常?.. ，参考 org.keycloak.keycloak-services@14.0.0//org.keycloak.broker.oidc.OIDCIdentityProvider.getFederatedIdentity 方法的第三行
 //    @Override
 //    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 //        endpoints
