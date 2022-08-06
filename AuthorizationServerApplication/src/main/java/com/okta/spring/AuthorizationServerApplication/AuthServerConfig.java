@@ -106,22 +106,22 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
         为什么需要转换呢？什么场景需要accessTokenConverter？
      */
-    @Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        endpoints
-                .tokenStore(tokenStore)
-                .tokenEnhancer(enhancer) // 这个完全是可选的，按照实际情况设置
-
-                .authenticationManager(authenticationManager) // 密码模式，必须配置AuthenticationManager，不然不生效
-
-                //设置userDetailsService刷新token时候会用到 https://blog.csdn.net/qq_38941259/article/details/105762497
-                //否则： TokenEndpoint  : Handling error: IllegalStateException, UserDetailsService is required.
-                .userDetailsService(userDetailsService);
-
-        ;
-        // System.out.println("authenticationManager = " + authenticationManager);
-        super.configure(endpoints);
-    }
+//    @Override
+//    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+//        endpoints
+//                .tokenStore(tokenStore)
+//                .tokenEnhancer(enhancer) // 这个完全是可选的，按照实际情况设置
+//
+//                .authenticationManager(authenticationManager) // 密码模式，必须配置AuthenticationManager，不然不生效
+//
+//                //设置userDetailsService刷新token时候会用到 https://blog.csdn.net/qq_38941259/article/details/105762497
+//                //否则： TokenEndpoint  : Handling error: IllegalStateException, UserDetailsService is required.
+//                .userDetailsService(userDetailsService);
+//
+//        ;
+//        // System.out.println("authenticationManager = " + authenticationManager);
+//        super.configure(endpoints);
+//    }
 
     @Autowired
     UserDetailsService userDetailsService;
@@ -191,9 +191,10 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
             // .secret(finalSecret)
             // 这里的authorizedGrantTypes如果包含refresh_token， 返回客户端的token才会包含refresh_token
             .authorizedGrantTypes("authorization_code", "password", "implicit","client_credentials","refresh_token")
-            .scopes("user_info")
+            // 在keycloak 自定义idp（Identity Providers）， 需要 openid 的scope； 否则：AuthorizationEndpoint: Handling OAuth2 error: error="invalid_scope", error_description="Invalid scope: openid", scope="user_info"
+            .scopes("user_info", "openid")
             .autoApprove(true) // 否则会返回 页面 而不是json， 需要确认 是否授权。。
-            .redirectUris(RedirectURLs)
+            .redirectUris(RedirectURLs.split(","))
 
             // 为了快速测试， 这里的过期时间故意设置比较短
             .accessTokenValiditySeconds(36)
@@ -216,7 +217,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
          .authorizedGrantTypes("authorization_code", "password", "implicit","client_credentials","refresh_token")
         .scopes("user_info")
         .autoApprove(true)
-        .redirectUris(RedirectURLs)
+        .redirectUris(RedirectURLs.split(","))
 
         .and()
         .inMemory()
@@ -225,7 +226,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
         .authorizedGrantTypes("authorization_code")
         .scopes("user_info")
         .autoApprove(true)
-        .redirectUris(RedirectURLs)
+        .redirectUris(RedirectURLs.split(","))
         ;
     }
 }
