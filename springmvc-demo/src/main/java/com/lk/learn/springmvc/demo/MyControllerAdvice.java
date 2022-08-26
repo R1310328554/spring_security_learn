@@ -1,9 +1,18 @@
 package com.lk.learn.springmvc.demo;
 
 
+import com.lk.learn.springmvc.demo.domain.BusinessCode;
+import com.lk.learn.springmvc.demo.domain.Result;
+import com.lk.learn.springmvc.demo.domain.ReturnCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.datetime.DateFormatter;
+import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -128,6 +137,7 @@ public class MyControllerAdvice {
     @ResponseBody
     @ExceptionHandler(value = RuntimeException.class)
     public Map errorHandler(Exception ex) {
+        System.out.println("MyControllerAdvice.RuntimeException " + ex);
         Map map = new HashMap();
         map.put("code", 100);
         map.put("msg", ex.getMessage());
@@ -150,7 +160,7 @@ No message available
     @ResponseBody
     @ExceptionHandler(value = Throwable.class)
     public Map errorHandler2(Throwable ex) {
-        System.out.println("MyControllerAdvice.errorHandler2 " + ex);
+        System.out.println("MyControllerAdvice.Throwable " + ex);
         Map map = new HashMap();
         map.put("code", 100);
         map.put("msg", ex.getMessage());
@@ -192,5 +202,48 @@ No message available
         return new BaseResult(e.getCode(),false,e.getMessage());
     }*/
 
+
+    /**
+     * 用于处理通用异常
+     */
+    // @ExceptionHandler(MethodArgumentNotValidException.class) 如果是 @Validated， 那么是这行！
+    @ExceptionHandler(BindException.class) // 如果RequestMapping 方法的参数是 @Valid 修饰， 那么 BindException
+    @ResponseStatus(HttpStatus.BAD_REQUEST) // 这个ResponseStatus 的目的仅仅是 改变http 响应code ！ 其他不影响！
+    @ResponseBody
+//    java.lang.IllegalStateException: Could not resolve parameter [0] in public java.lang.String com.lk.learn.springmvc.demo.MyControllerAdvice.bindException(org.springframework.web.bind.MethodArgumentNotValidException): No suitable resolver
+//	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:163) ~[spring-web-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+//	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:134) ~[spring-web-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+//	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:102) ~[spring-webmvc-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+//	at org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver.doResolveHandlerMethodException(ExceptionHandlerExceptionResolver.java:412) ~[spring-webmvc-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+//	at org.springframework.web.servlet.handler.AbstractHandlerMethodExceptionResolver.doResolveException(AbstractHandlerMethodExceptionResolver.java:61) [spring-webmvc-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+//	at org.springframework.web.servlet.handler.AbstractHandlerExceptionResolver.resolveException(AbstractHandlerExceptionResolver.java:139) [spring-webmvc-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+//	at org.springframework.web.servlet.handler.HandlerExceptionResolverComposite.resolveException(HandlerExceptionResolverComposite.java:80) [spring-webmvc-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+//	at org.springframework.web.servlet.DispatcherServlet.processHandlerException(DispatcherServlet.java:1297) [spring-webmvc-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+//	at org.springframework.web.servlet.DispatcherServlet.processDispatchResult(DispatcherServlet.java:1109) [spring-webmvc-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+//	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1055) [spring-webmvc-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+//	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:942) [spring-webmvc-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+//	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005) [spring-webmvc-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+//	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:897) [spring-webmvc-5.1.5.RELEASE.jar:5.1.5.RELEASE]
+//    public String bindException(MethodArgumentNotValidException e) {
+    public String bindException(BindException e) {
+        System.out.println("MyControllerAdvice.bindException");
+        BindingResult bindingResult = e.getBindingResult();
+        String errorMesssage = "校验失败:\n";
+        for (FieldError fieldError : bindingResult.getFieldErrors()) {
+            System.out.println("fieldError = " + fieldError);
+            errorMesssage += fieldError.getField() + ": " + fieldError.getDefaultMessage() + ", ";
+        }
+
+        //  return Result.fail(BusinessCode.PARAM_TYPE_IS_NOT_MATCH, errorMesssage);
+        return errorMesssage;
+    }
+
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)// 如果是 @Validated， 那么是这行！
+    @ResponseBody
+    public String bindException2(MethodArgumentNotValidException e) {
+        System.out.println("MyControllerAdvice.bindException2");
+        return e.getMessage();
+    }
 
 }

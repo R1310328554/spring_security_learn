@@ -9,6 +9,7 @@ public enum BusinessCode implements ReturnCode {
     PARAM_TYPE_IS_NOT_MATCH(10002, "参数类型不匹配"),
     FILE_UPLOAD_ERROR(10003, "文件上传错误"),
     UNKNOWN_ERROR(20000, "未知业务失败"),
+    PARAM_TYPE_IS_INVALID(10005, "参数校验不通过"),
 
     NOTFOUND_ERROR(404, "NOTFOUND_ERROR失败");
 
